@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="민지의 다이어리 상세보기" />
+    <title>민지의 다이어리 상세보기</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page" id="top">
+      <header class="site-header" data-node-id="3:122">
+        <div class="container header__inner" data-node-id="3:123">
+          <a class="logo" href="./index.html#diary" aria-label="민지의 다이어리 홈">민지의 다이어리</a>
+
+          <label class="theme-switch" for="theme-toggle">
+            <span>다크모드</span>
+            <input id="theme-toggle" type="checkbox" role="switch" aria-label="다크모드 전환" />
+            <span class="theme-switch__track" aria-hidden="true">
+              <span class="theme-switch__knob"></span>
+            </span>
+          </label>
+        </div>
+      </header>
+
+      <main>
+        <section class="detail-view container" id="detail-view" aria-labelledby="detail-title">
+          <article class="detail-card">
+            <div class="detail-heading">
+              <h1 id="detail-title">이것은 타이틀 입니다.</h1>
+              <div class="detail-meta">
+                <div class="detail-mood">
+                  <img id="detail-mood-image" src="../assets/mood-happy.png" alt="" />
+                  <strong id="detail-mood">행복해요</strong>
+                </div>
+                <div class="detail-date"><time id="detail-date" datetime="2024-07-12">2024. 07. 12</time><span>작성</span></div>
+              </div>
+            </div>
+            <div class="detail-content">
+              <h2>내용</h2>
+              <p id="detail-body"></p>
+              <button class="copy-button" id="copy-detail" type="button">
+                <img src="../assets/content-copy.svg" alt="" aria-hidden="true" />
+                내용 복사
+              </button>
+            </div>
+            <div class="detail-actions">
+              <button class="detail-action" id="edit-detail" type="button">수정</button>
+              <button class="detail-action" id="delete-detail" type="button">삭제</button>
+            </div>
+            <section class="reflection" aria-labelledby="reflection-title">
+              <h2 id="reflection-title">회고</h2>
+              <form class="reflection-form" id="reflection-form">
+                <label class="sr-only" for="reflection-input">회고를 남겨보세요.</label>
+                <input id="reflection-input" type="text" placeholder="회고를 남겨보세요." />
+                <button type="submit">입력</button>
+              </form>
+              <div class="reflection-list" id="reflection-list"></div>
+            </section>
+          </article>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container footer__inner">
+          <strong>민지의 다이어리</strong>
+          <p>대표 : {name}</p>
+          <small>Copyright © 2024. {name} Co., Ltd.</small>
+        </div>
+      </footer>
+
+      <button class="scroll-top" id="scroll-top" type="button" aria-label="맨 위로 이동">
+        <img src="../assets/scroll-top.svg" alt="" aria-hidden="true" />
+      </button>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+    </div>
+
+    <dialog class="write-dialog" id="write-dialog" aria-labelledby="write-dialog-title">
+      <form class="write-dialog__card" id="write-form" method="dialog">
+        <h2 id="write-dialog-title">일기 수정</h2>
+        <fieldset class="mood-field">
+          <legend>오늘 기분은 어땠나요?</legend>
+          <div class="mood-options">
+            <label><input type="radio" name="write-mood" value="sad" checked />슬퍼요</label>
+            <label><input type="radio" name="write-mood" value="surprised" />놀랐어요</label>
+            <label><input type="radio" name="write-mood" value="angry" />화나요</label>
+            <label><input type="radio" name="write-mood" value="happy" />행복해요</label>
+          </div>
+        </fieldset>
+        <label class="form-field">
+          <span>제목</span>
+          <input name="title" type="text" placeholder="제목을 입력해 주세요." required />
+        </label>
+        <label class="form-field">
+          <span>내용</span>
+          <textarea name="content" placeholder="내용을 입력해 주세요." required></textarea>
+        </label>
+        <div class="write-dialog__actions">
+          <button class="dialog-button dialog-button--secondary" type="button" id="close-dialog">닫기</button>
+          <button class="dialog-button dialog-button--primary" id="submit-diary" type="submit">수정하기</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="feedback-dialog" id="cancel-dialog" aria-labelledby="cancel-dialog-title">
+      <div class="feedback-dialog__card">
+        <h2 id="cancel-dialog-title">일기 수정 취소</h2>
+        <p id="cancel-dialog-message">수정 중인 내용이 저장되지 않습니다.<br />취소하시겠습니까?</p>
+        <div class="feedback-dialog__actions">
+          <button class="dialog-button dialog-button--secondary" id="keep-writing" type="button">취소</button>
+          <button class="dialog-button dialog-button--primary" id="discard-writing" type="button">확인</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="feedback-dialog" id="success-dialog" aria-labelledby="success-dialog-title">
+      <div class="feedback-dialog__card">
+        <h2 id="success-dialog-title">수정 완료</h2>
+        <p id="success-dialog-message">일기가 수정되었습니다.</p>
+        <div class="feedback-dialog__actions">
+          <button class="dialog-button dialog-button--primary" id="close-success" type="button">확인</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="feedback-dialog" id="delete-dialog" aria-labelledby="delete-dialog-title">
+      <div class="feedback-dialog__card">
+        <h2 id="delete-dialog-title">일기 삭제</h2>
+        <p>일기를 삭제하시겠습니까?</p>
+        <div class="feedback-dialog__actions">
+          <button class="dialog-button dialog-button--secondary" id="cancel-delete" type="button">취소</button>
+          <button class="dialog-button dialog-button--primary" id="confirm-delete" type="button">삭제</button>
+        </div>
+      </div>
+    </dialog>
+
+    <p class="sr-only" id="status-message" role="status"></p>
+    <script src="./script.js"></script>
+  </body>
+</html>
