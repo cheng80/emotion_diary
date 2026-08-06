@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<!-- 문서 설정 -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>택권의 다이어리 상세보기</title>
+		<link rel="stylesheet" href="./style.css" />
+	</head>
+	<body>
+		<!-- 헤더 -->
+		<header class="site-header">
+			<div class="page header-inner">
+				<!-- 다이어리 이름 -->
+				<div class="logo">택권의 다이어리</div>
+
+				<!-- 다크모드 선택 -->
+				<label class="theme-switch">
+					<span>다크모드</span>
+					<input type="checkbox" />
+				</label>
+			</div>
+		</header>
+
+		<!-- 일기 상세 -->
+		<main class="page">
+			<section class="detail-view">
+				<!-- 일기 목록으로 이동 -->
+				<button class="outline-button detail-back-button" type="button" onclick="location.href='./main.html'">← 목록으로</button>
+
+				<!-- 상세 카드 -->
+				<article class="detail-card">
+					<!-- 제목과 일기 정보 -->
+					<div class="detail-heading">
+						<h1 id="detail-title">좋아하는 사람들과 맛있는 저녁</h1>
+
+						<div class="detail-info">
+							<div class="mood-info">
+								<span class="mood-emoji" id="detail-emoji">😊</span>
+								<strong class="happy-text" id="detail-mood">행복해요</strong>
+							</div>
+							<span class="date" id="detail-date">2024. 03. 12 작성</span>
+						</div>
+					</div>
+
+					<!-- 일기 내용 -->
+					<div class="detail-content">
+						<h2>내용</h2>
+						<p class="diary-content" id="detail-body">함께 이야기하고 웃어서 행복한 하루였다.</p>
+						<div class="copy-area">
+							<button class="copy-button" type="button" aria-label="내용 복사" disabled></button>
+						</div>
+					</div>
+
+					<!-- 수정과 삭제 -->
+					<div class="detail-actions">
+						<button class="outline-button" type="button" onclick="editDiary()">수정</button>
+						<button class="outline-button" type="button" onclick="deleteDiary()">삭제</button>
+					</div>
+
+					<!-- 회고 입력과 목록 -->
+					<section class="reflection">
+						<h2>회고</h2>
+
+						<!-- 회고 입력 -->
+						<form class="reflection-form">
+							<input id="reflection-input" type="text" placeholder="회고를 남겨보세요." aria-label="회고" />
+							<button class="primary-button" type="button" onclick="addReflection()">입력</button>
+						</form>
+						<!-- 회고 목록 -->
+						<div class="reflection-list" id="reflection-list">
+							<div class="reflection-empty">등록된 회고가 없습니다.</div>
+						</div>
+					</section>
+				</article>
+			</section>
+		</main>
+
+		<!-- 푸터 -->
+		<footer class="site-footer">
+			<div class="page footer-inner">
+				<strong>택권의 다이어리</strong>
+				<p>대표 : 김택권</p>
+				<p class="copyright">Copyright © 2024. 김택권 Co., Ltd.</p>
+			</div>
+		</footer>
+
+		<!-- 맨 위로 이동 -->
+		<button class="scroll-top" type="button" onclick="scrollToTop()">⌃</button>
+
+		<!-- 일기 수정 모달 -->
+		<div class="modal-background" id="write-modal" onclick="closeWriteModal()">
+			<div class="write-modal" onclick="event.stopPropagation()">
+				<h2 class="modal-title" id="write-modal-title">일기 수정</h2>
+
+				<!-- 감정 선택 -->
+				<div class="field-group">
+					<div class="field-label">오늘 기분은 어땠나요?</div>
+					<div class="mood-options">
+						<label><input id="write-happy" type="radio" name="write-mood" /> 행복해요</label>
+						<label><input id="write-sad" type="radio" name="write-mood" /> 슬퍼요</label>
+						<label><input id="write-surprised" type="radio" name="write-mood" /> 놀랐어요</label>
+						<label><input id="write-angry" type="radio" name="write-mood" /> 화나요</label>
+					</div>
+				</div>
+
+				<!-- 제목 입력 -->
+				<div class="field-group">
+					<label class="field-label" for="write-title">제목</label>
+					<input class="title-input" id="write-title" type="text" placeholder="제목을 입력해 주세요." oninput="checkWriteButton()" />
+				</div>
+
+				<!-- 내용 입력 -->
+				<div class="field-group">
+					<label class="field-label" for="write-content">내용</label>
+					<textarea class="content-input" id="write-content" placeholder="내용을 입력해 주세요." oninput="checkWriteButton()"></textarea>
+				</div>
+
+				<!-- 모달 버튼 -->
+				<div class="modal-buttons">
+					<button class="close-button" type="button" onclick="closeWriteModal()">닫기</button>
+					<button class="submit-button" id="write-submit" type="button" onclick="submitDiary()">수정하기</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 토스트 메시지 -->
+		<div class="toast-area" id="toast-area"></div>
+
+		<!-- 자바스크립트 연결 -->
+		<script src="./script.js"></script>
+	</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<!-- 문서 설정 -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>택권의 다이어리</title>
+		<link rel="stylesheet" href="./style.css" />
+	</head>
+	<body>
+		<!-- 헤더 -->
+		<header class="site-header">
+			<div class="page header-inner">
+				<!-- 다이어리 이름 -->
+				<div class="logo">택권의 다이어리</div>
+
+				<!-- 다크모드 선택 -->
+				<label class="theme-switch">
+					<span>다크모드</span>
+					<input type="checkbox" />
+				</label>
+			</div>
+		</header>
+
+		<!-- 일기 목록 -->
+		<main class="page">
+			<!-- 배너 -->
+			<section class="banner"></section>
+
+			<!-- 보관함 내용 -->
+			<section class="content">
+				<!-- 보관함 탭 -->
+				<div class="tabs">
+					<span class="tab tab-selected">일기보관함</span>
+					<span class="tab">사진보관함</span>
+				</div>
+
+				<!-- 필터와 일기 쓰기 -->
+				<div class="toolbar">
+					<!-- 감정 필터와 검색 -->
+					<div class="filters">
+						<select aria-label="감정 필터" onchange="changeMood(event)">
+							<option>전체</option>
+							<option>슬퍼요</option>
+							<option>놀랐어요</option>
+							<option>화나요</option>
+							<option>행복해요</option>
+						</select>
+						<label class="search-label">
+							<input class="search-input" type="text" aria-label="일기 검색" placeholder="검색어를 입력해 주세요." />
+						</label>
+					</div>
+					<button class="write-button" type="button" onclick="openWriteModal()">＋ 일기쓰기</button>
+				</div>
+
+				<!-- 일기 카드 목록 -->
+				<section class="diary-grid" id="diary-grid"></section>
+			</section>
+		</main>
+
+		<!-- 푸터 -->
+		<footer class="site-footer">
+			<div class="page footer-inner">
+				<strong>택권의 다이어리</strong>
+				<p>대표 : {name}</p>
+				<p class="copyright">Copyright © 2024. {name} Co., Ltd.</p>
+			</div>
+		</footer>
+
+		<!-- 맨 위로 이동 -->
+		<button class="scroll-top" type="button" onclick="scrollToTop()">⌃</button>
+
+		<!-- 일기 작성 모달 -->
+		<div class="modal-background" id="write-modal" onclick="closeWriteModal()">
+			<div class="write-modal" onclick="event.stopPropagation()">
+				<h2 class="modal-title" id="write-modal-title">일기 쓰기</h2>
+
+				<!-- 감정 선택 -->
+				<div class="field-group">
+					<div class="field-label">오늘 기분은 어땠나요?</div>
+					<div class="mood-options">
+						<label><input id="write-happy" type="radio" name="write-mood" checked /> 행복해요</label>
+						<label><input id="write-sad" type="radio" name="write-mood" /> 슬퍼요</label>
+						<label><input id="write-surprised" type="radio" name="write-mood" /> 놀랐어요</label>
+						<label><input id="write-angry" type="radio" name="write-mood" /> 화나요</label>
+					</div>
+				</div>
+
+				<!-- 제목 입력 -->
+				<div class="field-group">
+					<label class="field-label" for="write-title">제목</label>
+					<input class="title-input" id="write-title" type="text" placeholder="제목을 입력해 주세요." oninput="checkWriteButton()" />
+				</div>
+
+				<!-- 내용 입력 -->
+				<div class="field-group">
+					<label class="field-label" for="write-content">내용</label>
+					<textarea class="content-input" id="write-content" placeholder="내용을 입력해 주세요." oninput="checkWriteButton()"></textarea>
+				</div>
+
+				<!-- 모달 버튼 -->
+				<div class="modal-buttons">
+					<button class="close-button" type="button" onclick="closeWriteModal()">닫기</button>
+					<button class="submit-button" id="write-submit" type="button" onclick="submitDiary()" disabled>등록하기</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 토스트 메시지 -->
+		<div class="toast-area" id="toast-area"></div>
+
+		<!-- 자바스크립트 연결 -->
+		<script src="./script.js"></script>
+	</body>
+</html>

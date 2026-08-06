@@ -1,0 +1,696 @@
+/* 기본 설정 */
+/* 공통: 테두리와 안쪽 여백을 요소 크기에 포함 */
+* {
+	box-sizing: border-box;
+}
+
+/* 공통: 화면 이동을 부드럽게 처리 */
+html {
+	scroll-behavior: smooth;
+}
+
+/* 공통: 문서 여백과 기본 글자색 */
+body {
+	margin: 0;
+	color: #111111;
+}
+
+/* 공통: 버튼에 마우스 커서 표시 */
+button {
+	cursor: pointer;
+}
+
+/* 공통: 제목과 문단의 위쪽 여백 제거 */
+h1,
+h2,
+p {
+	margin-top: 0;
+}
+
+/* 페이지 너비와 헤더 */
+/* 공통: 콘텐츠 너비를 제한하고 가운데 정렬 */
+.page {
+	width: 73rem;
+	max-width: 100%;
+	margin: 0 auto;
+}
+
+/* 헤더: 스크롤해도 화면 위에 고정 */
+.site-header {
+	height: 3.75rem;
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background-color: rgba(255, 255, 255, 0.75);
+}
+
+/* 헤더: 로고와 다크모드 선택을 양쪽에 배치 */
+.header-inner {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 1.25rem;
+}
+
+/* 헤더: 다크모드 문구와 체크박스 정렬 */
+.theme-switch {
+	display: flex;
+	gap: 0.625rem;
+	align-items: center;
+}
+
+/* 배너와 본문 */
+/* 목록: 상단 배너 모양 */
+.banner {
+	height: 15rem;
+	margin: 1.5rem 1.25rem 0;
+	border-radius: 1.5rem;
+	background-color: #d9d9d9;
+	overflow: hidden;
+}
+
+/* 목록: 보관함 내용의 안쪽 여백 */
+.content {
+	padding: 1.5rem 1.25rem 2.5rem;
+}
+
+/* 보관함 탭과 필터 */
+/* 목록: 보관함 탭을 가로로 배치 */
+.tabs {
+	min-height: 3rem;
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	margin-bottom: 2rem;
+}
+
+.tab {
+	padding: 0.75rem 0.5rem;
+	color: #aaaaaa;
+}
+
+/* 목록: 선택된 탭 표시 */
+.tab-selected {
+	color: #111111;
+	border-bottom: 0.125rem solid #111111;
+}
+
+/* 목록: 필터를 헤더 아래에 고정 */
+.toolbar {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+	padding: 0.75rem 0;
+	position: sticky;
+	top: 3.75rem;
+	z-index: 9;
+	background-color: white;
+}
+
+/* 목록: 감정 필터와 검색창 배치 */
+.filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	align-items: center;
+}
+
+/* 목록: 감정 필터 모양 */
+select {
+	width: 6.375rem;
+	height: 3rem;
+	padding: 0 0.625rem;
+	border: 0.0625rem solid #dddddd;
+	border-radius: 0.5rem;
+	background-color: white;
+}
+
+/* 목록: 검색창 너비와 모양 */
+.search-label {
+	width: 22.5rem;
+	max-width: 100%;
+}
+
+.search-input {
+	width: 100%;
+	height: 3rem;
+	padding: 0 1rem;
+	border: 0.0625rem solid #dddddd;
+	border-radius: 1.5rem;
+	background-color: white;
+}
+
+/* 목록: 일기 쓰기 버튼 */
+.write-button {
+	height: 3rem;
+	padding: 0 1.25rem;
+	border: 0;
+	border-radius: 0.5rem;
+	background-color: #111111;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 공통: 주요 작업 버튼 */
+.primary-button {
+	min-height: 3rem;
+	padding: 0.5rem 0.625rem;
+	border: 0;
+	border-radius: 0.5rem;
+	background-color: #111111;
+	color: white;
+}
+
+/* 일기 카드 목록 */
+/* 목록: 카드를 여러 줄로 배치 */
+.diary-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5rem;
+	min-height: 15rem;
+	position: relative;
+}
+
+/* 목록: 일기가 없을 때 안내 문구를 가운데 표시 */
+.empty-message {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #999999;
+}
+
+/* 목록: 카드 모양과 확대 효과 */
+.diary-card {
+	width: 16.5rem;
+	position: relative;
+	overflow: hidden;
+	border: 0.0625rem solid #dddddd;
+	border-radius: 1rem;
+	background-color: white;
+	cursor: pointer;
+	transition: transform 0.2s;
+}
+
+.diary-card:hover {
+	z-index: 1;
+	transform: scale(1.03);
+}
+
+/* 목록: 카드 오른쪽 위 삭제 버튼 */
+.card-delete {
+	width: 2.5rem;
+	height: 2.5rem;
+	padding: 0;
+	border: 0;
+	background-color: transparent;
+	position: absolute;
+	top: 0.25rem;
+	right: 0.25rem;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.delete-icon {
+	width: 1.5rem;
+	height: 1.5rem;
+	border: 0.0625rem solid #eeeeee;
+	border-radius: 50%;
+	background-color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 목록: 카드 이모지를 가운데 배치 */
+.card-visual {
+	height: 13rem;
+	border-radius: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 5rem;
+}
+
+/* 감정별 카드 색상 */
+.mood-happy {
+	background-color: #ffe0e0;
+}
+
+.mood-sad {
+	background-color: #dcf8fb;
+}
+
+.mood-surprised {
+	background-color: #fff6d8;
+}
+
+.mood-angry {
+	background-color: #e2e2e2;
+}
+
+/* 목록: 감정, 날짜, 제목의 안쪽 여백 */
+.card-body {
+	padding: 1rem 0.5rem;
+}
+
+/* 목록: 감정과 날짜를 양쪽에 배치 */
+.card-info {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5rem;
+}
+
+/* 목록·상세: 감정별 글자색 */
+.happy-text {
+	color: #ff5b5b;
+}
+
+.sad-text {
+	color: #29b6d6;
+}
+
+.surprised-text {
+	color: #dd9d20;
+}
+
+.angry-text {
+	color: #777777;
+}
+
+.date {
+	color: #999999;
+}
+
+/* 목록: 긴 제목을 한 줄 말줄임으로 표시 */
+.diary-card h2 {
+	margin: 0.5rem 0 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* 푸터와 고정 버튼 */
+/* 공통: 푸터 배경과 여백 */
+.site-footer {
+	padding: 1.5rem 1.25rem;
+	background-color: #f2f2f2;
+}
+
+/* 공통: 푸터 내용을 세로로 배치 */
+.footer-inner {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+.site-footer p {
+	margin: 0;
+	color: #aaaaaa;
+}
+
+/* 공통: 맨 위 버튼을 오른쪽 아래에 고정 */
+.scroll-top {
+	width: 2.625rem;
+	height: 2.625rem;
+	border: 0.0625rem solid #eeeeee;
+	border-radius: 50%;
+	background-color: white;
+	position: fixed;
+	right: 2rem;
+	bottom: 2rem;
+}
+
+/* 토스트 메시지 */
+/* 공통: 토스트를 화면 아래 가운데 배치 */
+.toast-area {
+	width: 100%;
+	position: fixed;
+	left: 0;
+	bottom: 4rem;
+	z-index: 30;
+	display: flex;
+	justify-content: center;
+}
+
+/* 공통: 토스트 모양과 표시 효과 */
+.toast-message {
+	width: 20rem;
+	max-width: 90%;
+	min-height: 3rem;
+	padding: 0.75rem 1rem;
+	border-radius: 0.5rem;
+	background-color: #111111;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	animation-name: toast-animation;
+	animation-duration: 3s;
+}
+
+/* 토스트가 나타났다가 사라지는 과정 */
+@keyframes toast-animation {
+	0% {
+		opacity: 0;
+	}
+
+	20% {
+		opacity: 1;
+	}
+
+	80% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+/* 일기 작성·수정 모달 */
+/* 모달: 화면을 덮고 입력창을 가운데 배치 */
+.modal-background {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.48);
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 20;
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 모달: 작성·수정 입력창 모양 */
+.write-modal {
+	width: 40.625rem;
+	max-width: 90%;
+	padding: 1.75rem 1.875rem 1.5rem;
+	border-radius: 1.25rem;
+	background-color: white;
+}
+
+.modal-title {
+	margin-bottom: 2.125rem;
+}
+
+/* 모달: 입력 항목 사이의 간격 */
+.field-group {
+	margin-bottom: 1.375rem;
+}
+
+.field-label {
+	display: block;
+	margin-bottom: 0.625rem;
+}
+
+/* 모달: 감정 선택 항목을 가로로 배치 */
+.mood-options {
+	display: flex;
+	gap: 1.125rem;
+	flex-wrap: wrap;
+}
+
+/* 모달: 제목과 내용 입력창 모양 */
+.title-input,
+.content-input {
+	width: 100%;
+	padding: 0.875rem;
+	border: 0.0625rem solid #dddddd;
+	border-radius: 0.5rem;
+}
+
+.content-input {
+	height: 7.8125rem;
+	resize: none;
+}
+
+/* 모달: 닫기와 저장 버튼을 가운데 배치 */
+.modal-buttons {
+	display: flex;
+	gap: 0.875rem;
+	justify-content: center;
+}
+
+.close-button,
+.submit-button {
+	width: 6.5rem;
+	height: 3rem;
+	border-radius: 0.5rem;
+}
+
+.close-button {
+	border: 0.0625rem solid #222222;
+	background-color: white;
+}
+
+.submit-button {
+	border: 0;
+	background-color: #111111;
+	color: white;
+}
+
+/* 모달: 입력 전에는 저장 버튼 비활성화 */
+.submit-button:disabled {
+	background-color: #cccccc;
+	cursor: default;
+}
+
+/* 일기 상세 */
+/* 상세: 전체 내용의 바깥 여백 */
+.detail-view {
+	padding: 1.5rem 1.25rem 2.5rem;
+}
+
+/* 상세: 목록으로 돌아가는 버튼 간격 */
+.detail-back-button {
+	margin-bottom: 1rem;
+}
+
+/* 상세: 일기와 회고를 감싸는 카드 */
+.detail-card {
+	padding-bottom: 1rem;
+	border-bottom: 0.0625rem solid #111111;
+}
+
+/* 상세: 제목과 일기 정보 */
+.detail-heading {
+	padding-bottom: 1rem;
+}
+
+.detail-heading h1 {
+	margin: 0 0 1rem;
+	padding-bottom: 0.75rem;
+	border-bottom: 0.125rem solid #111111;
+}
+
+/* 상세: 감정과 작성일을 양쪽에 배치 */
+.detail-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.mood-info {
+	display: flex;
+	gap: 0.625rem;
+	align-items: center;
+}
+
+/* 상세: 감정 이모지 크기 */
+.mood-emoji {
+	font-size: 1.5rem;
+}
+
+/* 상세: 일기 내용을 세로로 배치 */
+.detail-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.8125rem;
+	padding-bottom: 0.75rem;
+}
+
+.detail-content h2 {
+	margin: 0;
+}
+
+.diary-content {
+	min-height: 8rem;
+	margin: 0;
+}
+
+/* 상세: 복사 버튼을 오른쪽에 배치 */
+.copy-area {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.copy-button {
+	border: 0;
+	background-color: transparent;
+}
+
+.copy-button:disabled {
+	color: #999999;
+	cursor: default;
+}
+
+/* 상세: 수정과 삭제 버튼을 오른쪽에 배치 */
+.detail-actions {
+	display: flex;
+	gap: 1rem;
+	justify-content: flex-end;
+	padding-bottom: 1rem;
+}
+
+/* 상세: 테두리형 작업 버튼 */
+.outline-button {
+	min-height: 2.5rem;
+	padding: 0.5rem 0.625rem;
+	border: 0.0625rem solid #dddddd;
+	border-radius: 0.5rem;
+	background-color: white;
+}
+
+/* 회고 입력과 목록 */
+/* 상세: 회고 입력창과 목록을 세로로 배치 */
+.reflection {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding-top: 1.5rem;
+}
+
+.reflection h2 {
+	margin: 0;
+}
+
+/* 상세: 회고 입력창과 버튼을 가로로 배치 */
+.reflection-form {
+	display: flex;
+	gap: 1rem;
+}
+
+.reflection-form input {
+	flex: 1;
+	min-height: 3rem;
+	padding: 0 1rem;
+	border: 0.0625rem solid #dddddd;
+	border-radius: 0.5rem;
+}
+
+.reflection-form .primary-button {
+	width: 3.75rem;
+}
+
+/* 상세: 회고를 위에서 아래로 표시 */
+.reflection-list {
+	display: flex;
+	flex-direction: column;
+}
+
+/* 상세: 회고 내용과 날짜 배치 */
+.reflection-item {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	padding: 0.5rem 0;
+	border-bottom: 0.0625rem solid #eeeeee;
+}
+
+.reflection-item-last {
+	border-bottom: 0;
+}
+
+.reflection-date {
+	color: #999999;
+}
+
+/* 상세: 회고가 없을 때 안내 문구 표시 */
+.reflection-empty {
+	padding: 3.4375rem 0;
+	color: #aaaaaa;
+	text-align: center;
+}
+
+/* 태블릿과 모바일 반응형 */
+@media (max-width: 43.75rem) {
+	/* 목록: 배너 높이와 모서리 축소 */
+	.banner {
+		height: 10rem;
+		border-radius: 1rem;
+	}
+
+	/* 목록: 카드를 두 열로 변경 */
+	.diary-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1rem;
+	}
+
+	.diary-card {
+		width: auto;
+	}
+
+	/* 목록: 필터와 일기 쓰기 버튼을 세로로 배치 */
+	.toolbar {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.write-button {
+		width: 100%;
+	}
+
+	.search-label {
+		width: 100%;
+	}
+
+	/* 목록: 카드 높이와 이모지 크기 축소 */
+	.card-visual {
+		height: 8.5rem;
+		font-size: 3.5rem;
+	}
+
+	.detail-view {
+		padding-top: 1rem;
+	}
+
+	/* 공통: 맨 위 버튼을 화면 안쪽으로 이동 */
+	.scroll-top {
+		right: 1.25rem;
+		bottom: 1.25rem;
+	}
+}
+
+/* 작은 모바일 반응형 */
+@media (max-width: 31.25rem) {
+	/* 모달: 작은 화면에서 안쪽 여백 축소 */
+	.write-modal {
+		padding: 1.25rem;
+	}
+
+	/* 상세: 회고 입력창과 버튼을 세로로 배치 */
+	.reflection-form {
+		flex-direction: column;
+	}
+
+	.reflection-form .primary-button {
+		width: 100%;
+	}
+}
