@@ -229,6 +229,8 @@ function addDiary() {
 	document.getElementById("write-submit").disabled = true;
 
 	hideWriteModal();
+	selectedMood = "전체";
+	document.querySelector('select[aria-label="감정 필터"]').value = selectedMood;
 	filterDiaryList();
 	showToast("일기가 등록 되었습니다.");
 }
