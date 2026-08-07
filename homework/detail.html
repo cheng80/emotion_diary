@@ -36,7 +36,7 @@
 
 						<div class="detail-info">
 							<div class="mood-info">
-								<span class="mood-emoji" id="detail-emoji">😊</span>
+								<img class="mood-image" id="detail-emoji" src="../assets/mood-happy.png" alt="행복해요 감정" />
 								<strong class="happy-text" id="detail-mood">행복해요</strong>
 							</div>
 							<span class="date" id="detail-date">2024. 03. 12 작성</span>
@@ -48,7 +48,10 @@
 						<h2>내용</h2>
 						<p class="diary-content" id="detail-body">함께 이야기하고 웃어서 행복한 하루였다.</p>
 						<div class="copy-area">
-							<button class="copy-button" type="button" aria-label="내용 복사" disabled></button>
+							<button class="copy-button" type="button" aria-label="내용 복사" disabled>
+								<img src="../assets/content-copy.svg" alt="" aria-hidden="true" />
+								내용 복사
+							</button>
 						</div>
 					</div>
 
@@ -86,7 +89,9 @@
 		</div>
 
 		<!-- 맨 위로 이동 -->
-		<button class="scroll-top" type="button" onclick="scrollToTop()">⌃</button>
+		<button class="scroll-top" type="button" aria-label="맨 위로 이동" onclick="scrollToTop()">
+			<img src="../assets/scroll-top.svg" alt="" aria-hidden="true" />
+		</button>
 
 		<!-- 일기 수정 모달 -->
 		<div class="modal-background" id="write-modal" onclick="closeWriteModal()">

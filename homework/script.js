@@ -8,6 +8,13 @@ let selectedMood = "전체";
 let selectedDiary = {};
 let editingDiary = false;
 
+const moodImages = {
+	"행복해요": "../assets/diary-happy.png",
+	"슬퍼요": "../assets/diary-sad.png",
+	"놀랐어요": "../assets/diary-surprised.png",
+	"화나요": "../assets/diary-angry.png"
+};
+
 // 감정에 맞는 카드 배경 클래스를 반환
 function getMoodBackground(mood) {
 	if (mood === "행복해요") return "mood-happy";
@@ -71,8 +78,8 @@ function renderDiaryList(list) {
 
 		return `
 			<article class="diary-card" onclick="openDiary(${diary.number})">
-				<button class="card-delete" type="button" aria-label="일기 삭제" onclick="deleteDiaryFromList(event, ${diary.number})"><span class="delete-icon">×</span></button>
-				<div class="card-visual ${getMoodBackground(diary.mood)}">${diary.emoji}</div>
+				<button class="card-delete" type="button" aria-label="일기 삭제" onclick="deleteDiaryFromList(event, ${diary.number})"><span class="delete-icon"><img src="../assets/close.svg" alt="" aria-hidden="true" /></span></button>
+				<div class="card-visual ${getMoodBackground(diary.mood)}"><img src="${moodImages[diary.mood] || moodImages["화나요"]}" alt="${diary.mood} 감정 일기 이미지" /></div>
 				<div class="card-body">
 					<div class="card-info">
 						<strong class="${getMoodTextClass(diary.mood)}">${diary.mood}</strong>
@@ -229,7 +236,7 @@ function addDiary() {
 // 선택한 일기의 상세 내용을 화면에 표시
 function renderDetail() {
 	document.getElementById("detail-title").innerText = selectedDiary.title;
-	document.getElementById("detail-emoji").innerText = selectedDiary.emoji;
+	document.getElementById("detail-emoji").alt = selectedDiary.mood + " 감정";
 	document.getElementById("detail-mood").innerText = selectedDiary.mood;
 	document.getElementById("detail-mood").style.color = getMoodColor(selectedDiary.mood);
 	document.getElementById("detail-date").innerText = selectedDiary.date + " 작성";

@@ -25,7 +25,9 @@
 		<!-- 일기 목록 -->
 		<div class="page">
 			<!-- 배너 -->
-			<section class="banner"></section>
+			<section class="banner">
+				<img src="../assets/hero.png" alt="쿠션 위에 누워 있는 반려동물" />
+			</section>
 
 			<!-- 보관함 내용 -->
 			<section class="content">
@@ -50,7 +52,10 @@
 							<input class="search-input" type="text" aria-label="일기 검색" placeholder="검색어를 입력해 주세요." />
 						</label>
 					</div>
-					<button class="write-button" type="button" onclick="openWriteModal()">＋ 일기쓰기</button>
+					<button class="write-button" type="button" onclick="openWriteModal()">
+						<img src="../assets/add.svg" alt="" aria-hidden="true" />
+						일기쓰기
+					</button>
 				</div>
 
 				<!-- 일기 카드 목록 -->
@@ -68,7 +73,9 @@
 		</div>
 
 		<!-- 맨 위로 이동 -->
-		<button class="scroll-top" type="button" onclick="scrollToTop()">⌃</button>
+		<button class="scroll-top" type="button" aria-label="맨 위로 이동" onclick="scrollToTop()">
+			<img src="../assets/scroll-top.svg" alt="" aria-hidden="true" />
+		</button>
 
 		<!-- 일기 작성 모달 -->
 		<div class="modal-background" id="write-modal" onclick="closeWriteModal()">
