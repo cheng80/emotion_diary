@@ -5,6 +5,7 @@ const defaultDiaryList = [];
 
 let diaryList = [];
 let selectedMood = "전체";
+let searchKeyword = "";
 let selectedDiary = {};
 let editingDiary = false;
 
@@ -111,10 +112,13 @@ function renderDiaryList(list) {
 	document.getElementById("diary-grid").innerHTML = diaryHtml;
 }
 
-// 선택한 감정에 맞는 일기만 표시
+// 선택한 감정과 검색어에 맞는 일기만 표시
 function filterDiaryList() {
 	const filteredDiaryList = diaryList.filter(function (diary) {
-		return selectedMood === "전체" || diary.mood === selectedMood;
+		const matchesMood = selectedMood === "전체" || diary.mood === selectedMood;
+		const matchesKeyword = diary.title.includes(searchKeyword) || diary.content.includes(searchKeyword);
+
+		return matchesMood && matchesKeyword;
 	});
 
 	renderDiaryList(filteredDiaryList);
@@ -123,6 +127,12 @@ function filterDiaryList() {
 // 감정 선택값을 바꾸고 목록을 다시 표시
 function changeMood(event) {
 	selectedMood = event.target.value;
+	filterDiaryList();
+}
+
+// 검색어를 바꾸고 목록을 다시 표시
+function changeSearch(event) {
+	searchKeyword = event.target.value;
 	filterDiaryList();
 }
 
@@ -239,7 +249,9 @@ function addDiary() {
 
 	hideWriteModal();
 	selectedMood = "전체";
+	searchKeyword = "";
 	document.querySelector('select[aria-label="감정 필터"]').value = selectedMood;
+	document.querySelector('input[aria-label="일기 검색"]').value = searchKeyword;
 	filterDiaryList();
 	openModal("success-modal");
 }
