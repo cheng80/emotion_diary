@@ -4,3 +4,7 @@
 - 현재 checkout의 `main` 브랜치에서 직접 작업한다.
 - 검증을 완료한 변경은 `main` 브랜치에 직접 커밋할 수 있다.
 - 원격 push, Pull Request 생성·병합은 사용자가 명시적으로 요청한 경우에만 수행한다.
+
+## 기술·문법 기준
+
+- HTML, CSS, JavaScript 구현 시 `/Users/cheng80/Desktop/core_master_codes`의 기술과 문법 수준만 참고한다.
