@@ -88,7 +88,7 @@ function openModal(id) {
 	document.getElementById(id).style.display = "flex";
 }
 
-// 08/07 과제: 모달을 닫고 뒷배경 스크롤을 다시 허용한다.
+// 08/07 과제: 모달을 닫고 뒷배경 스크롤을 다시 허용
 function closeModal(id) {
 	document.getElementById(id).style.display = "none";
 	document.body.style.overflow = "";
@@ -201,7 +201,7 @@ function openWriteModal() {
 	openModal("write-modal");
 }
 
-// 08/07 과제: 일기 작성 또는 수정 취소 여부를 확인한다.
+// 08/07 과제: 일기 작성 또는 수정 취소 여부를 확인
 function closeWriteModal() {
 	hideWriteModal();
 	document.getElementById("cancel-modal-title").innerText = editingDiary ? "일기 수정을 취소할까요?" : "일기 작성을 취소할까요?";
@@ -209,24 +209,24 @@ function closeWriteModal() {
 	openModal("cancel-modal");
 }
 
-// 08/07 과제: 작성 또는 수정 모달을 닫는다.
+// 08/07 과제: 작성 또는 수정 모달을 닫기
 function hideWriteModal() {
 	closeModal("write-modal");
 }
 
-// 08/07 과제: 취소 확인 모달을 닫고 일기 작성 또는 수정으로 돌아간다.
+// 08/07 과제: 취소 확인 모달을 닫고 일기 작성 또는 수정으로 돌아가기
 function keepWriting() {
 	closeModal("cancel-modal");
 	openModal("write-modal");
 }
 
-// 08/07 과제: 일기 작성 또는 수정을 취소한다.
+// 08/07 과제: 일기 작성 또는 수정을 취소
 function discardWriting() {
 	closeModal("cancel-modal");
 	editingDiary = false;
 }
 
-// 08/07 과제: 일기 등록 또는 수정 완료 안내 모달을 닫는다.
+// 08/07 과제: 일기 등록 또는 수정 완료 안내 모달을 닫기
 function closeSuccessModal() {
 	closeModal("success-modal");
 }
@@ -263,7 +263,7 @@ function submitDiary() {
 	}
 }
 
-// 08/07 과제: 새 일기를 등록하고 완료 안내 모달을 표시한다.
+// 08/07 과제: 새 일기를 등록하고 완료 안내 모달을 표시
 function addDiary() {
 	const mood = getSelectedMood();
 	const today = new Date();
@@ -375,7 +375,7 @@ function editDiary() {
 	openModal("write-modal");
 }
 
-// 08/07 과제: 수정한 일기 내용을 저장하고 완료 안내 모달을 표시한다.
+// 08/07 과제: 수정한 일기 내용을 저장하고 완료 안내 모달을 표시
 function updateDiary() {
 	const mood = getSelectedMood();
 
@@ -390,7 +390,7 @@ function updateDiary() {
 	openModal("success-modal");
 }
 
-// 08/07 과제: 일기 내용을 클립보드에 복사하고 토스트를 표시한다.
+// 08/07 과제: 일기 내용을 클립보드에 복사하고 토스트를 표시
 function copyDiaryContent() {
 	navigator.clipboard.writeText(selectedDiary.content);
 	showToast("내용이 복사되었습니다.");
@@ -402,13 +402,13 @@ function deleteDiary() {
 	openModal("delete-modal");
 }
 
-// 08/07 과제: 삭제 확인 모달을 닫는다.
+// 08/07 과제: 삭제 확인 모달을 닫기
 function closeDeleteModal() {
 	deletingDiaryNumber = 0;
 	closeModal("delete-modal");
 }
 
-// 08/05 과제·08/07 과제: 확인한 일기를 삭제하고 현재 화면에 결과를 반영한다.
+// 08/05 과제·08/07 과제: 확인한 일기를 삭제하고 현재 화면에 결과를 반영
 function confirmDeleteDiary() {
 	diaryList = diaryList.filter(function (diary) {
 		return diary.number !== deletingDiaryNumber;
@@ -427,7 +427,7 @@ function confirmDeleteDiary() {
 	location.href = "./main.html";
 }
 
-// 08/05 과제: 새 회고를 등록하고 회고 위치로 부드럽게 이동한다.
+// 08/05 과제: 새 회고를 등록하고 회고 위치로 부드럽게 이동
 function addReflection() {
 	const reflectionInput = document.getElementById("reflection-input");
 	const reflection = reflectionInput.value;
@@ -456,12 +456,12 @@ function addReflection() {
 	location.href = "#reflection-list";
 }
 
-// 08/05 과제: 화면을 맨 위로 부드럽게 이동한다.
+// 08/05 과제: 화면을 맨 위로 부드럽게 이동
 function scrollToTop() {
 	window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// 08/07 과제: ESC 키로 현재 열려 있는 모달을 닫는다.
+// 08/07 과제: ESC 키로 현재 열려 있는 모달을 닫기
 window.addEventListener("keydown", function (event) {
 	if (event.key !== "Escape") return;
 
