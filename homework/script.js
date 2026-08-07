@@ -44,7 +44,7 @@ function saveDiaryList() {
 	localStorage.setItem(diaryStorageKey, JSON.stringify(diaryList));
 }
 
-// 08/07: 전달받은 문구를 화면 하단 토스트로 표시
+// 08/07 과제: 전달받은 문구를 화면 하단 토스트로 표시
 function showToast(message) {
 	document.getElementById("toast-area").innerHTML = '<div class="toast-message">' + message + "</div>";
 }
@@ -59,14 +59,14 @@ function showSavedToast() {
 	localStorage.setItem(toastStorageKey, "");
 }
 
-// 08/07: 모달을 열고 화면을 맨 위로 이동한 뒤 뒷배경 스크롤을 막는다.
+// 08/07 과제: 모달을 열고 화면을 맨 위로 이동한 뒤 뒷배경 스크롤을 막는다.
 function openModal(id) {
 	window.scrollTo({ top: 0 });
 	document.body.style.overflow = "hidden";
 	document.getElementById(id).style.display = "flex";
 }
 
-// 08/07: 모달을 닫고 뒷배경 스크롤을 다시 허용한다.
+// 08/07 과제: 모달을 닫고 뒷배경 스크롤을 다시 허용한다.
 function closeModal(id) {
 	document.getElementById(id).style.display = "none";
 	document.body.style.overflow = "";
@@ -138,7 +138,7 @@ function openDiary(number) {
 	location.href = "./detail.html?number=" + number;
 }
 
-// 08/05: 이벤트 버블링을 막고 카드에서 선택한 일기를 삭제
+// 08/05 과제: 이벤트 버블링을 막고 카드에서 선택한 일기를 삭제
 function deleteDiaryFromList(event, number) {
 	event.stopPropagation();
 
@@ -154,7 +154,7 @@ function deleteDiaryFromList(event, number) {
 	showToast("일기가 삭제 되었습니다.");
 }
 
-// 08/07: 빈 입력값으로 일기 작성 모달을 연다.
+// 08/07 과제: 빈 입력값으로 일기 작성 모달을 연다.
 function openWriteModal() {
 	editingDiary = false;
 	document.getElementById("write-modal-title").innerText = "일기 쓰기";
@@ -166,17 +166,17 @@ function openWriteModal() {
 	openModal("write-modal");
 }
 
-// 08/07: 작성 또는 수정 모달을 닫는다.
+// 08/07 과제: 작성 또는 수정 모달을 닫는다.
 function closeWriteModal() {
 	hideWriteModal();
 }
 
-// 08/07: 작성 또는 수정 모달을 닫는다.
+// 08/07 과제: 작성 또는 수정 모달을 닫는다.
 function hideWriteModal() {
 	closeModal("write-modal");
 }
 
-// 08/07: 등록 완료 안내 모달을 닫는다.
+// 08/07 과제: 등록 완료 안내 모달을 닫는다.
 function closeSuccessModal() {
 	closeModal("success-modal");
 }
@@ -213,7 +213,7 @@ function submitDiary() {
 	}
 }
 
-// 08/07: 새 일기를 등록하고 완료 안내 모달을 표시한다.
+// 08/07 과제: 새 일기를 등록하고 완료 안내 모달을 표시한다.
 function addDiary() {
 	const mood = getSelectedMood();
 	const today = new Date();
@@ -338,23 +338,23 @@ function updateDiary() {
 	showToast("일기가 수정 되었습니다.");
 }
 
-// 08/07: 일기 내용을 클립보드에 복사하고 토스트를 표시한다.
+// 08/07 과제: 일기 내용을 클립보드에 복사하고 토스트를 표시한다.
 function copyDiaryContent() {
 	navigator.clipboard.writeText(selectedDiary.content);
 	showToast("내용이 복사되었습니다.");
 }
 
-// 08/07: 삭제 확인 모달을 연다.
+// 08/07 과제: 삭제 확인 모달을 연다.
 function deleteDiary() {
 	openModal("delete-modal");
 }
 
-// 08/07: 삭제 확인 모달을 닫는다.
+// 08/07 과제: 삭제 확인 모달을 닫는다.
 function closeDeleteModal() {
 	closeModal("delete-modal");
 }
 
-// 08/07: 확인한 일기를 삭제하고 메인으로 이동한다.
+// 08/07 과제: 확인한 일기를 삭제하고 메인으로 이동한다.
 function confirmDeleteDiary() {
 	diaryList = diaryList.filter(function (diary) {
 		return diary.number !== selectedDiary.number;
@@ -365,7 +365,7 @@ function confirmDeleteDiary() {
 	location.href = "./main.html";
 }
 
-// 08/05: 새 회고를 등록하고 회고 위치로 부드럽게 이동한다.
+// 08/05 과제: 새 회고를 등록하고 회고 위치로 부드럽게 이동한다.
 function addReflection() {
 	const reflectionInput = document.getElementById("reflection-input");
 	const reflection = reflectionInput.value;
@@ -394,12 +394,12 @@ function addReflection() {
 	location.href = "#reflection-list";
 }
 
-// 08/05: 화면을 맨 위로 부드럽게 이동한다.
+// 08/05 과제: 화면을 맨 위로 부드럽게 이동한다.
 function scrollToTop() {
 	window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// 08/07: ESC 키로 현재 열려 있는 모달을 닫는다.
+// 08/07 과제: ESC 키로 현재 열려 있는 모달을 닫는다.
 window.addEventListener("keydown", function (event) {
 	if (event.key !== "Escape") return;
 
