@@ -17,7 +17,7 @@
 				<!-- 다크모드 선택 -->
 				<label class="theme-switch">
 					<span>다크모드</span>
-					<input type="checkbox" />
+					<input id="theme-toggle" type="checkbox" onchange="changeTheme(event)" />
 				</label>
 			</div>
 		</div>
@@ -130,7 +130,28 @@
 			</div>
 		</div>
 
-		<!-- 08/07 과제: 삭제 확인 모달 -->
+		<!-- 08/07 과제: 일기 수정 취소 확인 모달 -->
+		<div class="modal-background" id="cancel-modal" onclick="keepWriting()">
+			<div class="message-modal" onclick="event.stopPropagation()">
+				<h2 id="cancel-modal-title">일기 수정을 취소할까요?</h2>
+				<div class="modal-buttons">
+					<button class="close-button" type="button" onclick="keepWriting()">계속 작성</button>
+					<button class="submit-button" id="cancel-confirm" type="button" onclick="discardWriting()">수정 취소</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 08/07 과제: 일기 수정 완료 안내 모달 -->
+		<div class="modal-background" id="success-modal" onclick="closeSuccessModal()">
+			<div class="message-modal" onclick="event.stopPropagation()">
+				<h2>수정이 완료되었습니다.</h2>
+				<div class="modal-buttons">
+					<button class="submit-button" type="button" onclick="closeSuccessModal()">확인</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 08/05 과제·08/07 과제: 목록·상세 공용 삭제 확인 모달 -->
 		<div class="modal-background" id="delete-modal" onclick="closeDeleteModal()">
 			<div class="message-modal" onclick="event.stopPropagation()">
 				<h2>이 일기를 삭제할까요?</h2>

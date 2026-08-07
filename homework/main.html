@@ -17,7 +17,7 @@
 				<!-- 다크모드 선택 -->
 				<label class="theme-switch">
 					<span>다크모드</span>
-					<input type="checkbox" />
+					<input id="theme-toggle" type="checkbox" onchange="changeTheme(event)" />
 				</label>
 			</div>
 		</div>
@@ -67,8 +67,8 @@
 		<div class="site-footer">
 			<div class="page footer-inner">
 				<strong>택권의 다이어리</strong>
-				<p>대표 : {name}</p>
-				<p class="copyright">Copyright © 2024. {name} Co., Ltd.</p>
+				<p>대표 : 김택권</p>
+				<p class="copyright">Copyright © 2024. 김택권 Co., Ltd.</p>
 			</div>
 		</div>
 
@@ -113,12 +113,34 @@
 			</div>
 		</div>
 
+		<!-- 08/07 과제: 일기 작성 취소 확인 모달 -->
+		<div class="modal-background" id="cancel-modal" onclick="keepWriting()">
+			<div class="message-modal" onclick="event.stopPropagation()">
+				<h2 id="cancel-modal-title">일기 작성을 취소할까요?</h2>
+				<div class="modal-buttons">
+					<button class="close-button" type="button" onclick="keepWriting()">계속 작성</button>
+					<button class="submit-button" id="cancel-confirm" type="button" onclick="discardWriting()">작성 취소</button>
+				</div>
+			</div>
+		</div>
+
 		<!-- 08/07 과제: 등록 완료 중첩 모달 -->
 		<div class="modal-background" id="success-modal" onclick="closeSuccessModal()">
 			<div class="message-modal" onclick="event.stopPropagation()">
 				<h2>등록이 완료되었습니다.</h2>
 				<div class="modal-buttons">
 					<button class="submit-button" type="button" onclick="closeSuccessModal()">확인</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 08/05 과제·08/07 과제: 목록·상세 공용 삭제 확인 모달 -->
+		<div class="modal-background" id="delete-modal" onclick="closeDeleteModal()">
+			<div class="message-modal" onclick="event.stopPropagation()">
+				<h2>이 일기를 삭제할까요?</h2>
+				<div class="modal-buttons">
+					<button class="close-button" type="button" onclick="closeDeleteModal()">취소</button>
+					<button class="submit-button" type="button" onclick="confirmDeleteDiary()">삭제</button>
 				</div>
 			</div>
 		</div>

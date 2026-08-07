@@ -1,5 +1,6 @@
 const diaryStorageKey = "homework-diary-list";
 const toastStorageKey = "homework-toast-message";
+const themeStorageKey = "homework-dark-mode";
 
 const defaultDiaryList = [];
 
@@ -8,6 +9,7 @@ let selectedMood = "전체";
 let searchKeyword = "";
 let selectedDiary = {};
 let editingDiary = false;
+let deletingDiaryNumber = 0;
 
 const moodImages = {
 	"행복해요": "../assets/diary-happy.png",
@@ -32,17 +34,36 @@ function getMoodTextClass(mood) {
 	return "angry-text";
 }
 
-// 감정에 맞는 상세 글자색을 반환
-function getMoodColor(mood) {
-	if (mood === "행복해요") return "#ff5b5b";
-	if (mood === "슬퍼요") return "#29b6d6";
-	if (mood === "놀랐어요") return "#dd9d20";
-	return "#777777";
-}
-
 // 일기 목록을 브라우저 저장소에 저장
 function saveDiaryList() {
 	localStorage.setItem(diaryStorageKey, JSON.stringify(diaryList));
+}
+
+// 저장된 다크모드 선택값을 화면과 체크박스에 적용
+function prepareTheme() {
+	const darkMode = localStorage.getItem(themeStorageKey) === "true";
+	const themeToggle = document.getElementById("theme-toggle");
+
+	if (darkMode) {
+		document.body.classList.add("dark-mode");
+	} else {
+		document.body.classList.remove("dark-mode");
+	}
+
+	themeToggle.checked = darkMode;
+}
+
+// 체크박스 선택에 따라 다크모드를 전환하고 선택값을 저장
+function changeTheme(event) {
+	const darkMode = event.target.checked;
+
+	if (darkMode) {
+		document.body.classList.add("dark-mode");
+	} else {
+		document.body.classList.remove("dark-mode");
+	}
+
+	localStorage.setItem(themeStorageKey, String(darkMode));
 }
 
 // 08/07 과제: 전달받은 문구를 화면 하단 토스트로 표시
@@ -80,8 +101,21 @@ function loadDiaryList() {
 	if (savedDiaryList === null) {
 		diaryList = defaultDiaryList;
 		saveDiaryList();
-	} else {
-		diaryList = JSON.parse(savedDiaryList);
+		return;
+	}
+
+	try {
+		const parsedDiaryList = JSON.parse(savedDiaryList);
+
+		if (Array.isArray(parsedDiaryList)) {
+			diaryList = parsedDiaryList;
+		} else {
+			diaryList = defaultDiaryList;
+			saveDiaryList();
+		}
+	} catch (error) {
+		diaryList = defaultDiaryList;
+		saveDiaryList();
 	}
 }
 
@@ -151,17 +185,8 @@ function openDiary(number) {
 // 08/05 과제: 이벤트 버블링을 막고 카드에서 선택한 일기를 삭제
 function deleteDiaryFromList(event, number) {
 	event.stopPropagation();
-
-	const shouldDelete = confirm("이 일기를 삭제할까요?");
-	if (shouldDelete === false) return;
-
-	diaryList = diaryList.filter(function (diary) {
-		return diary.number !== number;
-	});
-
-	saveDiaryList();
-	filterDiaryList();
-	showToast("일기가 삭제 되었습니다.");
+	deletingDiaryNumber = number;
+	openModal("delete-modal");
 }
 
 // 08/07 과제: 빈 입력값으로 일기 작성 모달을 연다.
@@ -176,9 +201,12 @@ function openWriteModal() {
 	openModal("write-modal");
 }
 
-// 08/07 과제: 작성 또는 수정 모달을 닫는다.
+// 08/07 과제: 일기 작성 또는 수정 취소 여부를 확인한다.
 function closeWriteModal() {
 	hideWriteModal();
+	document.getElementById("cancel-modal-title").innerText = editingDiary ? "일기 수정을 취소할까요?" : "일기 작성을 취소할까요?";
+	document.getElementById("cancel-confirm").innerText = editingDiary ? "수정 취소" : "작성 취소";
+	openModal("cancel-modal");
 }
 
 // 08/07 과제: 작성 또는 수정 모달을 닫는다.
@@ -186,7 +214,19 @@ function hideWriteModal() {
 	closeModal("write-modal");
 }
 
-// 08/07 과제: 등록 완료 안내 모달을 닫는다.
+// 08/07 과제: 취소 확인 모달을 닫고 일기 작성 또는 수정으로 돌아간다.
+function keepWriting() {
+	closeModal("cancel-modal");
+	openModal("write-modal");
+}
+
+// 08/07 과제: 일기 작성 또는 수정을 취소한다.
+function discardWriting() {
+	closeModal("cancel-modal");
+	editingDiary = false;
+}
+
+// 08/07 과제: 일기 등록 또는 수정 완료 안내 모달을 닫는다.
 function closeSuccessModal() {
 	closeModal("success-modal");
 }
@@ -261,7 +301,7 @@ function renderDetail() {
 	document.getElementById("detail-title").innerText = selectedDiary.title;
 	document.getElementById("detail-emoji").alt = selectedDiary.mood + " 감정";
 	document.getElementById("detail-mood").innerText = selectedDiary.mood;
-	document.getElementById("detail-mood").style.color = getMoodColor(selectedDiary.mood);
+	document.getElementById("detail-mood").className = getMoodTextClass(selectedDiary.mood);
 	document.getElementById("detail-date").innerText = selectedDiary.date + " 작성";
 	document.getElementById("detail-body").innerText = selectedDiary.content;
 }
@@ -335,7 +375,7 @@ function editDiary() {
 	openModal("write-modal");
 }
 
-// 수정한 일기 내용을 저장하고 화면을 갱신
+// 08/07 과제: 수정한 일기 내용을 저장하고 완료 안내 모달을 표시한다.
 function updateDiary() {
 	const mood = getSelectedMood();
 
@@ -347,7 +387,7 @@ function updateDiary() {
 	editingDiary = false;
 	hideWriteModal();
 	renderDetail();
-	showToast("일기가 수정 되었습니다.");
+	openModal("success-modal");
 }
 
 // 08/07 과제: 일기 내용을 클립보드에 복사하고 토스트를 표시한다.
@@ -358,21 +398,31 @@ function copyDiaryContent() {
 
 // 08/07 과제: 삭제 확인 모달을 연다.
 function deleteDiary() {
+	deletingDiaryNumber = selectedDiary.number;
 	openModal("delete-modal");
 }
 
 // 08/07 과제: 삭제 확인 모달을 닫는다.
 function closeDeleteModal() {
+	deletingDiaryNumber = 0;
 	closeModal("delete-modal");
 }
 
-// 08/07 과제: 확인한 일기를 삭제하고 메인으로 이동한다.
+// 08/05 과제·08/07 과제: 확인한 일기를 삭제하고 현재 화면에 결과를 반영한다.
 function confirmDeleteDiary() {
 	diaryList = diaryList.filter(function (diary) {
-		return diary.number !== selectedDiary.number;
+		return diary.number !== deletingDiaryNumber;
 	});
 
 	saveDiaryList();
+	closeDeleteModal();
+
+	if (document.getElementById("diary-grid") !== null) {
+		filterDiaryList();
+		showToast("일기가 삭제 되었습니다.");
+		return;
+	}
+
 	localStorage.setItem(toastStorageKey, "일기가 삭제 되었습니다.");
 	location.href = "./main.html";
 }
@@ -416,17 +466,23 @@ window.addEventListener("keydown", function (event) {
 	if (event.key !== "Escape") return;
 
 	const deleteModal = document.getElementById("delete-modal");
+	const cancelModal = document.getElementById("cancel-modal");
 	const successModal = document.getElementById("success-modal");
 	const writeModal = document.getElementById("write-modal");
 
 	if (deleteModal !== null && deleteModal.style.display === "flex") {
 		closeDeleteModal();
+	} else if (cancelModal.style.display === "flex") {
+		keepWriting();
 	} else if (successModal !== null && successModal.style.display === "flex") {
 		closeSuccessModal();
 	} else if (writeModal.style.display === "flex") {
-		hideWriteModal();
+		closeWriteModal();
 	}
 });
+
+// 페이지가 준비되는 동안 저장된 화면 모드를 먼저 적용
+prepareTheme();
 
 // 현재 페이지에 맞는 초기 화면을 준비
 window.onload = function () {

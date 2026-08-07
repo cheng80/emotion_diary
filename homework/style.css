@@ -11,6 +11,75 @@
 	   └─ 2: 카드 내부 삭제 버튼
 */
 
+/* 공통: 여러 화면에서 반복되는 색상과 크기 */
+:root {
+	--color-background: #ffffff;
+	--color-text: #111111;
+	--color-primary: #111111;
+	--color-on-primary: #ffffff;
+	--color-surface: #ffffff;
+	--color-border: #dddddd;
+	--color-border-light: #eeeeee;
+	--color-muted: #999999;
+	--color-subtle: #aaaaaa;
+	--color-soft: #f2f2f2;
+	--color-header: rgba(255, 255, 255, 0.75);
+	--color-toggle-active: #4a4a4a;
+	--color-focus: #8bb7ff;
+	--color-banner: #d9d9d9;
+	--color-image-outline: rgba(0, 0, 0, 0.1);
+	--color-overlay: rgba(0, 0, 0, 0.48);
+	--color-close-border: #222222;
+	--color-disabled: #cccccc;
+	--color-mood-happy-bg: #ffe0e0;
+	--color-mood-sad-bg: #dcf8fb;
+	--color-mood-surprised-bg: #fff6d8;
+	--color-mood-angry-bg: #e2e2e2;
+	--color-mood-happy-text: #ff5b5b;
+	--color-mood-sad-text: #29b6d6;
+	--color-mood-surprised-text: #dd9d20;
+	--color-mood-angry-text: #777777;
+	--primary-icon-filter: invert(1);
+	--surface-icon-filter: none;
+	--page-width: 73rem;
+	--header-height: 3.75rem;
+	--control-height: 3rem;
+	--control-radius: 0.5rem;
+	--card-radius: 1rem;
+	--border-width: 0.0625rem;
+}
+
+/* 다크모드: 공통 색상 변수만 덮어써서 모든 화면에 동일하게 적용 */
+body.dark-mode {
+	color-scheme: dark;
+	--color-background: #171717;
+	--color-text: #f8f8f8;
+	--color-primary: #f8f8f8;
+	--color-on-primary: #171717;
+	--color-surface: #242424;
+	--color-border: #525252;
+	--color-border-light: #3a3a3a;
+	--color-muted: #b5b5b5;
+	--color-subtle: #8e8e8e;
+	--color-soft: #303030;
+	--color-header: rgba(23, 23, 23, 0.75);
+	--color-toggle-active: #747474;
+	--color-banner: #303030;
+	--color-image-outline: rgba(255, 255, 255, 0.1);
+	--color-close-border: #dddddd;
+	--color-disabled: #525252;
+	--color-mood-happy-bg: #4a2c2c;
+	--color-mood-sad-bg: #1f4148;
+	--color-mood-surprised-bg: #4a3d1f;
+	--color-mood-angry-bg: #3a3a3a;
+	--color-mood-happy-text: #ff7b7b;
+	--color-mood-sad-text: #57cbe3;
+	--color-mood-surprised-text: #e7b95a;
+	--color-mood-angry-text: #b5b5b5;
+	--primary-icon-filter: none;
+	--surface-icon-filter: invert(1);
+}
+
 /* 08/06 과제: 전체 크기 값을 rem으로 작성하고 반응형 화면을 구성 */
 /* 공통: 테두리와 안쪽 여백을 요소 크기에 포함 */
 * {
@@ -25,7 +94,8 @@ html {
 /* 공통: 문서 여백과 기본 글자색 */
 body {
 	margin: 0;
-	color: #111111;
+	color: var(--color-text);
+	background-color: var(--color-background);
 }
 
 /* 공통: 버튼에 마우스 커서 표시 */
@@ -43,18 +113,18 @@ p {
 /* 페이지 너비와 헤더 */
 /* 공통: 콘텐츠 너비를 제한하고 가운데 정렬 */
 .page {
-	width: 73rem;
+	width: var(--page-width);
 	max-width: 100%;
 	margin: 0 auto;
 }
 
 /* 헤더: 스크롤해도 화면 위에 고정 */
 .site-header {
-	height: 3.75rem;
+	height: var(--header-height);
 	position: sticky;
 	top: 0;
 	z-index: 10;
-	background-color: rgba(255, 255, 255, 0.75);
+	background-color: var(--color-header);
 }
 
 /* 헤더: 로고와 다크모드 선택을 양쪽에 배치 */
@@ -79,18 +149,18 @@ p {
 	margin: 0;
 	border-radius: 1rem;
 	appearance: none;
-	background: #f2f2f2 url("../assets/toggle-knob.svg") 0.125rem center / 1.75rem no-repeat;
+	background: var(--color-soft) url("../assets/toggle-knob.svg") 0.125rem center / 1.75rem no-repeat;
 	cursor: pointer;
 	transition: background-color 0.18s, background-position 0.18s;
 }
 
 .theme-switch input:checked {
-	background-color: #4a4a4a;
+	background-color: var(--color-toggle-active);
 	background-position: calc(100% - 0.125rem) center;
 }
 
 .theme-switch input:focus-visible {
-	outline: 0.1875rem solid #8bb7ff;
+	outline: 0.1875rem solid var(--color-focus);
 	outline-offset: 0.125rem;
 }
 
@@ -100,7 +170,7 @@ p {
 	height: 15rem;
 	margin: 1.5rem 1.25rem 0;
 	border-radius: 1.5rem;
-	background-color: #d9d9d9;
+	background-color: var(--color-banner);
 	overflow: hidden;
 }
 
@@ -109,7 +179,7 @@ p {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	outline: 0.0625rem solid rgba(0, 0, 0, 0.1);
+	outline: var(--border-width) solid var(--color-image-outline);
 	outline-offset: -0.0625rem;
 }
 
@@ -121,7 +191,7 @@ p {
 /* 보관함 탭과 필터 */
 /* 목록: 보관함 탭을 가로로 배치 */
 .tabs {
-	min-height: 3rem;
+	min-height: var(--control-height);
 	display: flex;
 	gap: 1rem;
 	align-items: center;
@@ -130,13 +200,13 @@ p {
 
 .tab {
 	padding: 0.75rem 0.5rem;
-	color: #aaaaaa;
+	color: var(--color-subtle);
 }
 
 /* 목록: 선택된 탭 표시 */
 .tab-selected {
-	color: #111111;
-	border-bottom: 0.125rem solid #111111;
+	color: var(--color-text);
+	border-bottom: 0.125rem solid var(--color-text);
 }
 
 /* 08/05 과제: 목록 필터를 스크롤 중 헤더 아래에 고정 */
@@ -148,9 +218,9 @@ p {
 	margin-bottom: 1.5rem;
 	padding: 0.75rem 0;
 	position: sticky;
-	top: 3.75rem;
+	top: var(--header-height);
 	z-index: 9;
-	background-color: white;
+	background-color: var(--color-surface);
 }
 
 /* 목록: 감정 필터와 검색창 배치 */
@@ -164,12 +234,13 @@ p {
 /* 목록: 감정 필터 모양 */
 select {
 	width: 6.375rem;
-	height: 3rem;
+	height: var(--control-height);
 	padding: 0 2.125rem 0 0.625rem;
-	border: 0.0625rem solid #dddddd;
-	border-radius: 0.5rem;
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--control-radius);
 	appearance: none;
-	background: white url("../assets/arrow-down.svg") right 0.625rem center / 1.5rem no-repeat;
+	background: var(--color-surface) url("../assets/arrow-down.svg") right 0.625rem center / 1.5rem no-repeat;
+	color: var(--color-text);
 }
 
 /* 목록: 검색창 너비와 모양 */
@@ -180,21 +251,22 @@ select {
 
 .search-input {
 	width: 100%;
-	height: 3rem;
+	height: var(--control-height);
 	padding: 0 1rem 0 3rem;
-	border: 0.0625rem solid #dddddd;
+	border: var(--border-width) solid var(--color-border);
 	border-radius: 1.5rem;
-	background: white url("../assets/search.svg") 1rem center / 1.5rem no-repeat;
+	background: var(--color-surface) url("../assets/search.svg") 1rem center / 1.5rem no-repeat;
+	color: var(--color-text);
 }
 
 /* 목록: 일기 쓰기 버튼 */
 .write-button {
-	height: 3rem;
+	height: var(--control-height);
 	padding: 0 1.25rem;
 	border: 0;
-	border-radius: 0.5rem;
-	background-color: #111111;
-	color: white;
+	border-radius: var(--control-radius);
+	background-color: var(--color-primary);
+	color: var(--color-on-primary);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -204,17 +276,17 @@ select {
 .write-button img {
 	width: 1.5rem;
 	height: 1.5rem;
-	filter: invert(1);
+	filter: var(--primary-icon-filter);
 }
 
 /* 공통: 주요 작업 버튼 */
 .primary-button {
-	min-height: 3rem;
+	min-height: var(--control-height);
 	padding: 0.5rem 0.625rem;
 	border: 0;
-	border-radius: 0.5rem;
-	background-color: #111111;
-	color: white;
+	border-radius: var(--control-radius);
+	background-color: var(--color-primary);
+	color: var(--color-on-primary);
 }
 
 /* 일기 카드 목록 */
@@ -238,7 +310,7 @@ select {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: #999999;
+	color: var(--color-muted);
 }
 
 /* 목록: 카드 모양과 확대 효과 */
@@ -247,9 +319,9 @@ select {
 	position: relative;
 	z-index: 0;
 	overflow: hidden;
-	border: 0.0625rem solid #dddddd;
-	border-radius: 1rem;
-	background-color: white;
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--card-radius);
+	background-color: var(--color-surface);
 	cursor: pointer;
 	transition: transform 0.2s;
 }
@@ -278,9 +350,9 @@ select {
 .delete-icon {
 	width: 1.5rem;
 	height: 1.5rem;
-	border: 0.0625rem solid #eeeeee;
+	border: var(--border-width) solid var(--color-border-light);
 	border-radius: 50%;
-	background-color: white;
+	background-color: var(--color-surface);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -289,13 +361,14 @@ select {
 .delete-icon img {
 	width: 0.875rem;
 	height: 0.875rem;
+	filter: var(--surface-icon-filter);
 }
 
 /* 목록: 감정 이미지를 카드에 맞춰 표시 */
 .card-visual {
 	height: 13rem;
 	overflow: hidden;
-	border-radius: 1rem;
+	border-radius: var(--card-radius);
 }
 
 .card-visual img {
@@ -303,25 +376,33 @@ select {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	outline: 0.0625rem solid rgba(0, 0, 0, 0.1);
+	outline: var(--border-width) solid var(--color-image-outline);
 	outline-offset: -0.0625rem;
+	transition: transform 0.18s, filter 0.18s;
+}
+
+/* 목록: 카드에 마우스를 올리거나 내부 버튼에 초점이 있으면 이미지를 확대하고 흐리게 표시 */
+.diary-card:hover .card-visual img,
+.diary-card:focus-within .card-visual img {
+	transform: scale(1.04);
+	filter: blur(0.125rem);
 }
 
 /* 감정별 카드 색상 */
 .mood-happy {
-	background-color: #ffe0e0;
+	background-color: var(--color-mood-happy-bg);
 }
 
 .mood-sad {
-	background-color: #dcf8fb;
+	background-color: var(--color-mood-sad-bg);
 }
 
 .mood-surprised {
-	background-color: #fff6d8;
+	background-color: var(--color-mood-surprised-bg);
 }
 
 .mood-angry {
-	background-color: #e2e2e2;
+	background-color: var(--color-mood-angry-bg);
 }
 
 /* 목록: 감정, 날짜, 제목의 안쪽 여백 */
@@ -338,23 +419,23 @@ select {
 
 /* 목록·상세: 감정별 글자색 */
 .happy-text {
-	color: #ff5b5b;
+	color: var(--color-mood-happy-text);
 }
 
 .sad-text {
-	color: #29b6d6;
+	color: var(--color-mood-sad-text);
 }
 
 .surprised-text {
-	color: #dd9d20;
+	color: var(--color-mood-surprised-text);
 }
 
 .angry-text {
-	color: #777777;
+	color: var(--color-mood-angry-text);
 }
 
 .date {
-	color: #999999;
+	color: var(--color-muted);
 }
 
 /* 목록: 긴 제목을 한 줄 말줄임으로 표시 */
@@ -369,7 +450,7 @@ select {
 /* 공통: 푸터 배경과 여백 */
 .site-footer {
 	padding: 1.5rem 1.25rem;
-	background-color: #f2f2f2;
+	background-color: var(--color-soft);
 }
 
 /* 공통: 푸터 내용을 세로로 배치 */
@@ -381,16 +462,16 @@ select {
 
 .site-footer p {
 	margin: 0;
-	color: #aaaaaa;
+	color: var(--color-subtle);
 }
 
 /* 08/06 과제: 스크롤 위치와 관계없이 맨 위 버튼을 오른쪽 아래에 고정 */
 .scroll-top {
 	width: 2.625rem;
 	height: 2.625rem;
-	border: 0.0625rem solid #eeeeee;
+	border: var(--border-width) solid var(--color-border-light);
 	border-radius: 50%;
-	background-color: white;
+	background-color: var(--color-surface);
 	position: fixed;
 	right: 2rem;
 	bottom: 2rem;
@@ -404,6 +485,7 @@ select {
 	width: 0.625rem;
 	height: 1.125rem;
 	transform: rotate(-90deg);
+	filter: var(--surface-icon-filter);
 }
 
 /* 08/07 과제: 내용 복사 결과를 토스트 애니메이션으로 표시 */
@@ -422,11 +504,11 @@ select {
 .toast-message {
 	width: 20rem;
 	max-width: 90%;
-	min-height: 3rem;
+	min-height: var(--control-height);
 	padding: 0.75rem 1rem;
-	border-radius: 0.5rem;
-	background-color: #111111;
-	color: white;
+	border-radius: var(--control-radius);
+	background-color: var(--color-primary);
+	color: var(--color-on-primary);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -459,7 +541,7 @@ select {
 .modal-background {
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0, 0, 0, 0.48);
+	background-color: var(--color-overlay);
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -475,7 +557,7 @@ select {
 	max-width: 90%;
 	padding: 1.75rem 1.875rem 1.5rem;
 	border-radius: 1.25rem;
-	background-color: white;
+	background-color: var(--color-surface);
 }
 
 /* 모달: 안내 문구와 버튼을 가운데 배치 */
@@ -484,7 +566,7 @@ select {
 	max-width: 90%;
 	padding: 2rem;
 	border-radius: 1.25rem;
-	background-color: white;
+	background-color: var(--color-surface);
 	text-align: center;
 }
 
@@ -518,8 +600,10 @@ select {
 .content-input {
 	width: 100%;
 	padding: 0.875rem;
-	border: 0.0625rem solid #dddddd;
-	border-radius: 0.5rem;
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--control-radius);
+	background-color: var(--color-surface);
+	color: var(--color-text);
 }
 
 .content-input {
@@ -537,24 +621,25 @@ select {
 .close-button,
 .submit-button {
 	width: 6.5rem;
-	height: 3rem;
-	border-radius: 0.5rem;
+	height: var(--control-height);
+	border-radius: var(--control-radius);
 }
 
 .close-button {
-	border: 0.0625rem solid #222222;
-	background-color: white;
+	border: var(--border-width) solid var(--color-close-border);
+	background-color: var(--color-surface);
+	color: var(--color-text);
 }
 
 .submit-button {
 	border: 0;
-	background-color: #111111;
-	color: white;
+	background-color: var(--color-primary);
+	color: var(--color-on-primary);
 }
 
 /* 모달: 입력 전에는 저장 버튼 비활성화 */
 .submit-button:disabled {
-	background-color: #cccccc;
+	background-color: var(--color-disabled);
 	cursor: default;
 }
 
@@ -572,7 +657,7 @@ select {
 /* 상세: 일기와 회고를 감싸는 카드 */
 .detail-card {
 	padding-bottom: 1rem;
-	border-bottom: 0.0625rem solid #111111;
+	border-bottom: var(--border-width) solid var(--color-text);
 }
 
 /* 상세: 제목과 일기 정보 */
@@ -583,7 +668,7 @@ select {
 .detail-heading h1 {
 	margin: 0 0 1rem;
 	padding-bottom: 0.75rem;
-	border-bottom: 0.125rem solid #111111;
+	border-bottom: 0.125rem solid var(--color-text);
 }
 
 /* 상세: 감정과 작성일을 양쪽에 배치 */
@@ -636,11 +721,13 @@ select {
 	padding: 0;
 	border: 0;
 	background-color: transparent;
+	color: var(--color-text);
 }
 
 .copy-button img {
 	width: 1.5rem;
 	height: 1.5rem;
+	filter: var(--surface-icon-filter);
 }
 
 /* 상세: 수정과 삭제 버튼을 오른쪽에 배치 */
@@ -655,9 +742,10 @@ select {
 .outline-button {
 	min-height: 2.5rem;
 	padding: 0.5rem 0.625rem;
-	border: 0.0625rem solid #dddddd;
-	border-radius: 0.5rem;
-	background-color: white;
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--control-radius);
+	background-color: var(--color-surface);
+	color: var(--color-text);
 }
 
 /* 회고 입력과 목록 */
@@ -681,10 +769,19 @@ select {
 
 .reflection-form input {
 	flex: 1;
-	min-height: 3rem;
+	min-height: var(--control-height);
 	padding: 0 1rem;
-	border: 0.0625rem solid #dddddd;
-	border-radius: 0.5rem;
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--control-radius);
+	background-color: var(--color-surface);
+	color: var(--color-text);
+}
+
+.search-input::placeholder,
+.title-input::placeholder,
+.content-input::placeholder,
+.reflection-form input::placeholder {
+	color: var(--color-muted);
 }
 
 .reflection-form .primary-button {
@@ -711,13 +808,13 @@ select {
 }
 
 .reflection-date {
-	color: #999999;
+	color: var(--color-muted);
 }
 
 /* 상세: 회고가 없을 때 안내 문구 표시 */
 .reflection-empty {
 	padding: 3.4375rem 0;
-	color: #aaaaaa;
+	color: var(--color-subtle);
 	text-align: center;
 }
 
