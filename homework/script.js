@@ -59,6 +59,19 @@ function showSavedToast() {
 	localStorage.setItem(toastStorageKey, "");
 }
 
+// 모달을 열고 뒷배경 스크롤을 막는다.
+function openModal(id) {
+	window.scrollTo({ top: 0 });
+	document.body.style.overflow = "hidden";
+	document.getElementById(id).style.display = "flex";
+}
+
+// 모달을 닫고 뒷배경 스크롤을 다시 허용한다.
+function closeModal(id) {
+	document.getElementById(id).style.display = "none";
+	document.body.style.overflow = "";
+}
+
 // 브라우저 저장소에서 일기 목록을 불러온다.
 function loadDiaryList() {
 	const savedDiaryList = localStorage.getItem(diaryStorageKey);
@@ -150,26 +163,22 @@ function openWriteModal() {
 	document.getElementById("write-content").value = "";
 	document.getElementById("write-happy").checked = true;
 	document.getElementById("write-submit").disabled = true;
-	document.getElementById("write-modal").style.display = "flex";
+	openModal("write-modal");
 }
 
-// 작성 또는 수정 취소를 확인하고 모달을 닫는다.
+// 작성 또는 수정 모달을 닫는다.
 function closeWriteModal() {
-	let message = "작성 중인 내용이 저장되지 않습니다.\n취소하시겠습니까?";
-
-	if (editingDiary) {
-		message = "수정 중인 내용이 저장되지 않습니다.\n취소하시겠습니까?";
-	}
-
-	const shouldClose = confirm(message);
-	if (shouldClose === false) return;
-
 	hideWriteModal();
 }
 
-// 확인창 없이 작성 모달을 닫는다.
+// 작성 또는 수정 모달을 닫는다.
 function hideWriteModal() {
-	document.getElementById("write-modal").style.display = "none";
+	closeModal("write-modal");
+}
+
+// 등록 완료 안내 모달을 닫는다.
+function closeSuccessModal() {
+	closeModal("success-modal");
 }
 
 // 작성 폼에서 선택한 감정을 반환
@@ -232,7 +241,7 @@ function addDiary() {
 	selectedMood = "전체";
 	document.querySelector('select[aria-label="감정 필터"]').value = selectedMood;
 	filterDiaryList();
-	showToast("일기가 등록 되었습니다.");
+	openModal("success-modal");
 }
 
 // 선택한 일기의 상세 내용을 화면에 표시
@@ -311,7 +320,7 @@ function editDiary() {
 	document.getElementById("write-title").value = selectedDiary.title;
 	document.getElementById("write-content").value = selectedDiary.content;
 	document.getElementById("write-submit").disabled = false;
-	document.getElementById("write-modal").style.display = "flex";
+	openModal("write-modal");
 }
 
 // 수정한 일기 내용을 저장하고 화면을 갱신
@@ -329,11 +338,24 @@ function updateDiary() {
 	showToast("일기가 수정 되었습니다.");
 }
 
-// 상세 페이지의 일기를 삭제하고 메인으로 이동
-function deleteDiary() {
-	const shouldDelete = confirm("이 일기를 삭제할까요?");
-	if (shouldDelete === false) return;
+// 일기 내용 복사 후 안내 메시지를 표시한다.
+function copyDiaryContent() {
+	navigator.clipboard.writeText(selectedDiary.content);
+	showToast("내용이 복사되었습니다.");
+}
 
+// 삭제 확인 모달을 연다.
+function deleteDiary() {
+	openModal("delete-modal");
+}
+
+// 삭제 확인 모달을 닫는다.
+function closeDeleteModal() {
+	closeModal("delete-modal");
+}
+
+// 상세 페이지의 일기를 삭제하고 메인으로 이동한다.
+function confirmDeleteDiary() {
 	diaryList = diaryList.filter(function (diary) {
 		return diary.number !== selectedDiary.number;
 	});
@@ -376,6 +398,23 @@ function addReflection() {
 function scrollToTop() {
 	window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+// ESC 키로 현재 열려 있는 모달을 닫는다.
+window.addEventListener("keydown", function (event) {
+	if (event.key !== "Escape") return;
+
+	const deleteModal = document.getElementById("delete-modal");
+	const successModal = document.getElementById("success-modal");
+	const writeModal = document.getElementById("write-modal");
+
+	if (deleteModal !== null && deleteModal.style.display === "flex") {
+		closeDeleteModal();
+	} else if (successModal !== null && successModal.style.display === "flex") {
+		closeSuccessModal();
+	} else if (writeModal.style.display === "flex") {
+		hideWriteModal();
+	}
+});
 
 // 현재 페이지에 맞는 초기 화면을 준비
 window.onload = function () {

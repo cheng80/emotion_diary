@@ -48,7 +48,7 @@
 						<h2>내용</h2>
 						<p class="diary-content" id="detail-body">함께 이야기하고 웃어서 행복한 하루였다.</p>
 						<div class="copy-area">
-							<button class="copy-button" type="button" aria-label="내용 복사" disabled>
+							<button class="copy-button" type="button" aria-label="내용 복사" onclick="copyDiaryContent()">
 								<img src="../assets/content-copy.svg" alt="" aria-hidden="true" />
 								내용 복사
 							</button>
@@ -125,6 +125,17 @@
 				<div class="modal-buttons">
 					<button class="close-button" type="button" onclick="closeWriteModal()">닫기</button>
 					<button class="submit-button" id="write-submit" type="button" onclick="submitDiary()">수정하기</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 삭제 확인 -->
+		<div class="modal-background" id="delete-modal" onclick="closeDeleteModal()">
+			<div class="message-modal" onclick="event.stopPropagation()">
+				<h2>이 일기를 삭제할까요?</h2>
+				<div class="modal-buttons">
+					<button class="close-button" type="button" onclick="closeDeleteModal()">취소</button>
+					<button class="submit-button" type="button" onclick="confirmDeleteDiary()">삭제</button>
 				</div>
 			</div>
 		</div>

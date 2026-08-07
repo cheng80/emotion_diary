@@ -463,6 +463,20 @@ select {
 	background-color: white;
 }
 
+/* 모달: 안내 문구와 버튼을 가운데 배치 */
+.message-modal {
+	width: 24rem;
+	max-width: 90%;
+	padding: 2rem;
+	border-radius: 1.25rem;
+	background-color: white;
+	text-align: center;
+}
+
+.message-modal h2 {
+	margin-bottom: 2rem;
+}
+
 .modal-title {
 	margin-bottom: 2.125rem;
 }
@@ -612,11 +626,6 @@ select {
 .copy-button img {
 	width: 1.5rem;
 	height: 1.5rem;
-}
-
-.copy-button:disabled {
-	color: #999999;
-	cursor: default;
 }
 
 /* 상세: 수정과 삭제 버튼을 오른쪽에 배치 */

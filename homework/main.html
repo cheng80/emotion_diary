@@ -113,6 +113,16 @@
 			</div>
 		</div>
 
+		<!-- 등록 완료 안내 -->
+		<div class="modal-background" id="success-modal" onclick="closeSuccessModal()">
+			<div class="message-modal" onclick="event.stopPropagation()">
+				<h2>등록이 완료되었습니다.</h2>
+				<div class="modal-buttons">
+					<button class="submit-button" type="button" onclick="closeSuccessModal()">확인</button>
+				</div>
+			</div>
+		</div>
+
 		<!-- 토스트 메시지 -->
 		<div class="toast-area" id="toast-area"></div>
 
