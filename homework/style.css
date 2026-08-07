@@ -11,12 +11,13 @@
 	   └─ 2: 카드 내부 삭제 버튼
 */
 
+/* 08/06: 전체 크기 값을 rem으로 작성하고 반응형 화면을 구성 */
 /* 공통: 테두리와 안쪽 여백을 요소 크기에 포함 */
 * {
 	box-sizing: border-box;
 }
 
-/* 공통: 화면 이동을 부드럽게 처리 */
+/* 08/05: 화면 이동을 부드럽게 처리 */
 html {
 	scroll-behavior: smooth;
 }
@@ -138,7 +139,7 @@ p {
 	border-bottom: 0.125rem solid #111111;
 }
 
-/* 목록: 필터를 헤더 아래에 고정 */
+/* 08/05: 목록 필터를 스크롤 중 헤더 아래에 고정 */
 .toolbar {
 	display: flex;
 	align-items: flex-end;
@@ -258,7 +259,7 @@ select {
 	transform: scale(1.03);
 }
 
-/* 목록: 카드 오른쪽 위 삭제 버튼 */
+/* 08/05: 카드 이미지 위에 삭제 버튼을 겹쳐 배치 */
 .card-delete {
 	width: 2.5rem;
 	height: 2.5rem;
@@ -383,7 +384,7 @@ select {
 	color: #aaaaaa;
 }
 
-/* 공통: 맨 위 버튼을 오른쪽 아래에 고정 */
+/* 08/06: 스크롤 위치와 관계없이 맨 위 버튼을 오른쪽 아래에 고정 */
 .scroll-top {
 	width: 2.625rem;
 	height: 2.625rem;
@@ -405,7 +406,7 @@ select {
 	transform: rotate(-90deg);
 }
 
-/* 토스트 메시지 */
+/* 08/07: 내용 복사 결과를 토스트 애니메이션으로 표시 */
 /* 공통: 토스트를 화면 아래 가운데 배치 */
 .toast-area {
 	width: 100%;
@@ -453,7 +454,7 @@ select {
 	}
 }
 
-/* 일기 작성·수정 모달 */
+/* 08/07: 일기 작성·수정 및 중첩 안내 모달 */
 /* 모달: 화면을 덮고 입력창을 가운데 배치 */
 .modal-background {
 	width: 100%;
@@ -720,7 +721,7 @@ select {
 	text-align: center;
 }
 
-/* 태블릿과 모바일 반응형 */
+/* 08/06: 태블릿과 모바일 반응형 화면 */
 @media (max-width: 43.75rem) {
 	/* 목록: 배너 높이와 모서리 축소 */
 	.banner {
@@ -728,7 +729,7 @@ select {
 		border-radius: 1rem;
 	}
 
-	/* 목록: 카드를 두 열로 변경 */
+	/* 08/06: 모바일 목록을 한 줄에 카드 두 개가 있는 grid로 변경 */
 	.diary-grid {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
