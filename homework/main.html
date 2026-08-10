@@ -26,41 +26,11 @@
 		<div class="page">
 			<!-- 배너 -->
 			<section class="banner">
-				<img src="../assets/hero.jpg" alt="쿠션 위에 누워 있는 반려동물" />
+				<img src="../assets/hero.jpg" />
 			</section>
 
-			<!-- 보관함 내용 -->
-			<section class="content">
-				<!-- 보관함 탭 -->
-				<div class="tabs">
-					<span class="tab tab-selected">일기보관함</span>
-					<span class="tab">사진보관함</span>
-				</div>
-
-				<!-- 필터와 일기 쓰기 -->
-				<div class="toolbar">
-					<!-- 감정 필터와 검색 -->
-					<div class="filters">
-						<select aria-label="감정 필터" onchange="changeMood(event)">
-							<option>전체</option>
-							<option>슬퍼요</option>
-							<option>놀랐어요</option>
-							<option>화나요</option>
-							<option>행복해요</option>
-						</select>
-						<label class="search-label">
-							<input class="search-input" type="text" aria-label="일기 검색" placeholder="검색어를 입력해 주세요." oninput="changeSearch(event)" />
-						</label>
-					</div>
-					<button class="write-button" type="button" onclick="openWriteModal()">
-						<img src="../assets/add.svg" alt="" aria-hidden="true" />
-						일기쓰기
-					</button>
-				</div>
-
-				<!-- 일기 카드 목록 -->
-				<section class="diary-grid" id="diary-grid"></section>
-			</section>
+			<!-- 08/10 과제: JavaScript 컴포넌트로 일기보관함과 사진보관함을 표시 -->
+			<section class="content" id="library-content"></section>
 		</div>
 
 		<!-- 푸터 -->
@@ -73,8 +43,8 @@
 		</div>
 
 		<!-- 08/05 과제·08/06 과제: 맨 위로 이동하는 고정 버튼 -->
-		<button class="scroll-top" type="button" aria-label="맨 위로 이동" onclick="scrollToTop()">
-			<img src="../assets/scroll-top.svg" alt="" aria-hidden="true" />
+		<button class="scroll-top" type="button" onclick="scrollToTop()">
+			<img src="../assets/scroll-top.svg" />
 		</button>
 
 		<!-- 08/07 과제: 일기 작성 모달 -->

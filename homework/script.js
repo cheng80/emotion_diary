@@ -1,6 +1,7 @@
 const diaryStorageKey = "homework-diary-list";
 const toastStorageKey = "homework-toast-message";
 const themeStorageKey = "homework-dark-mode";
+const dogApiUrl = "https://dog.ceo/api/breeds/image/random/10";
 
 const defaultDiaryList = [];
 
@@ -10,6 +11,9 @@ let searchKeyword = "";
 let selectedDiary = {};
 let editingDiary = false;
 let deletingDiaryNumber = 0;
+let dogImageList = [];
+let photoRatio = "square";
+let photoLoading = false;
 
 const moodImages = {
 	"행복해요": "../assets/diary-happy.png",
@@ -119,6 +123,87 @@ function loadDiaryList() {
 	}
 }
 
+// 08/10 과제: 선택한 보관함에 맞는 탭 컴포넌트를 반환
+function getLibraryTabs(selectedLibrary) {
+	const diaryClass = selectedLibrary === "diary" ? "tab tab-selected" : "tab";
+	const photoClass = selectedLibrary === "photos" ? "tab tab-selected" : "tab";
+
+	return `
+		<div class="tabs">
+			<button class="${diaryClass}" type="button" onclick="changeLibraryView('diary')">일기보관함</button>
+			<button class="${photoClass}" type="button" onclick="changeLibraryView('photos')">사진보관함</button>
+		</div>
+	`;
+}
+
+// 08/10 과제: 일기보관함 컴포넌트를 화면에 표시
+function renderDiaryStorage() {
+	document.getElementById("library-content").innerHTML = `
+		${getLibraryTabs("diary")}
+		<div class="toolbar">
+			<div class="filters">
+				<select id="mood-filter" onchange="changeMood(event)">
+					<option>전체</option>
+					<option>슬퍼요</option>
+					<option>놀랐어요</option>
+					<option>화나요</option>
+					<option>행복해요</option>
+				</select>
+				<label class="search-label">
+					<input id="diary-search" class="search-input" type="text" placeholder="검색어를 입력해 주세요." oninput="changeSearch(event)" />
+				</label>
+			</div>
+			<button class="write-button" type="button" onclick="openWriteModal()">
+				<img src="../assets/add.svg" />
+				일기쓰기
+			</button>
+		</div>
+		<section class="diary-grid" id="diary-grid"></section>
+	`;
+
+	document.getElementById("mood-filter").value = selectedMood;
+	document.getElementById("diary-search").value = searchKeyword;
+	filterDiaryList();
+}
+
+// 08/10 과제: 사진보관함 컴포넌트를 화면에 표시
+function renderPhotoStorage() {
+	document.getElementById("library-content").innerHTML = `
+		${getLibraryTabs("photos")}
+		<div class="photo-toolbar">
+			<label class="photo-ratio-field">
+				<span>사진 비율</span>
+				<select id="photo-ratio-select" class="photo-ratio-select" onchange="changePhotoRatio(event)">
+					<option value="square">기본형</option>
+					<option value="wide">가로형</option>
+					<option value="portrait">세로형</option>
+				</select>
+			</label>
+			<button class="primary-button" type="button" onclick="loadDogImages()">새로 불러오기</button>
+		</div>
+		<section class="photo-gallery photo-gallery-${photoRatio}" id="photo-gallery"></section>
+	`;
+
+	document.getElementById("photo-ratio-select").value = photoRatio;
+
+	if (dogImageList.length > 0) {
+		renderDogImages();
+		return;
+	}
+
+	renderPhotoSkeletons();
+	loadDogImages();
+}
+
+// 08/10 과제: 탭에서 선택한 보관함 컴포넌트로 전환
+function changeLibraryView(library) {
+	if (library === "photos") {
+		renderPhotoStorage();
+	} else {
+		renderDiaryStorage();
+	}
+}
+
 // 일기 목록을 최신순으로 카드에 표시
 function renderDiaryList(list) {
 	let diaryHtml = list.map(function (diary, index) {
@@ -126,8 +211,8 @@ function renderDiaryList(list) {
 
 		return `
 			<article class="diary-card" onclick="openDiary(${diary.number})">
-				<button class="card-delete" type="button" aria-label="일기 삭제" onclick="deleteDiaryFromList(event, ${diary.number})"><span class="delete-icon"><img src="../assets/close.svg" alt="" aria-hidden="true" /></span></button>
-				<div class="card-visual ${getMoodBackground(diary.mood)}"><img src="${moodImages[diary.mood] || moodImages["화나요"]}" alt="${diary.mood} 감정 일기 이미지" /></div>
+				<button class="card-delete" type="button" onclick="deleteDiaryFromList(event, ${diary.number})"><span class="delete-icon"><img src="../assets/close.svg" /></span></button>
+				<div class="card-visual ${getMoodBackground(diary.mood)}"><img src="${moodImages[diary.mood] || moodImages["화나요"]}" /></div>
 				<div class="card-body">
 					<div class="card-info">
 						<strong class="${getMoodTextClass(diary.mood)}">${diary.mood}</strong>
@@ -170,10 +255,98 @@ function changeSearch(event) {
 	filterDiaryList();
 }
 
+// 08/10 과제: 강아지 이미지를 기다리는 동안 그라데이션 스켈레톤을 표시
+function renderPhotoSkeletons() {
+	const gallery = document.getElementById("photo-gallery");
+
+	if (gallery === null) return;
+
+	let skeletonHtml = "";
+
+	for (let index = 0; index < 10; index++) {
+		skeletonHtml += `
+			<div class="photo-card">
+				<div class="photo-skeleton"><div class="photo-skeleton-bar"></div></div>
+			</div>
+		`;
+	}
+
+	gallery.innerHTML = skeletonHtml;
+}
+
+// 08/10 과제: API에서 받은 강아지 이미지를 사진보관함에 표시
+function renderDogImages() {
+	const gallery = document.getElementById("photo-gallery");
+
+	if (gallery === null) return;
+
+	gallery.innerHTML = dogImageList.map(function (imageUrl, index) {
+		return `
+			<figure class="photo-card">
+				<div class="photo-skeleton"><div class="photo-skeleton-bar"></div></div>
+				<img src="${imageUrl}" />
+			</figure>
+		`;
+	}).join("");
+}
+
+// 08/10 과제: 강아지 API 호출 실패 시 재시도 안내를 표시
+function renderPhotoError() {
+	const gallery = document.getElementById("photo-gallery");
+
+	if (gallery === null) return;
+
+	gallery.innerHTML = `
+		<div class="photo-load-error">
+			<p>강아지 사진을 불러오지 못했습니다.</p>
+			<button class="primary-button" type="button" onclick="loadDogImages()">다시 불러오기</button>
+		</div>
+	`;
+}
+
+// 08/10 과제: 비동기 처리와 예외 처리를 적용해 강아지 이미지 10개를 불러옴
+async function loadDogImages() {
+	if (photoLoading) return;
+
+	photoLoading = true;
+	renderPhotoSkeletons();
+
+	try {
+		const response = await fetch(dogApiUrl);
+
+		if (!response.ok) {
+			throw new Error("강아지 API 요청에 실패했습니다.");
+		}
+
+		const result = await response.json();
+
+		if (result.status !== "success" || result.message === undefined) {
+			throw new Error("강아지 이미지 응답 형식이 올바르지 않습니다.");
+		}
+
+		dogImageList = result.message;
+		renderDogImages();
+	} catch (error) {
+		dogImageList = [];
+		console.error(error);
+		renderPhotoError();
+	} finally {
+		photoLoading = false;
+	}
+}
+
+// 08/10 과제: 선택한 비율 클래스를 사진 목록에 적용
+function changePhotoRatio(event) {
+	photoRatio = event.target.value;
+
+	const gallery = document.getElementById("photo-gallery");
+	gallery.className = "photo-gallery photo-gallery-" + photoRatio;
+}
+
 // 메인 페이지의 일기와 토스트를 준비
 function prepareMainPage() {
 	loadDiaryList();
-	renderDiaryList(diaryList);
+	renderDiaryStorage();
 	showSavedToast();
 }
 
@@ -290,8 +463,8 @@ function addDiary() {
 	hideWriteModal();
 	selectedMood = "전체";
 	searchKeyword = "";
-	document.querySelector('select[aria-label="감정 필터"]').value = selectedMood;
-	document.querySelector('input[aria-label="일기 검색"]').value = searchKeyword;
+	document.getElementById("mood-filter").value = selectedMood;
+	document.getElementById("diary-search").value = searchKeyword;
 	filterDiaryList();
 	openModal("success-modal");
 }
@@ -486,7 +659,7 @@ prepareTheme();
 
 // 현재 페이지에 맞는 초기 화면을 준비
 window.onload = function () {
-	if (document.getElementById("diary-grid") !== null) {
+	if (document.getElementById("library-content") !== null) {
 		prepareMainPage();
 	} else {
 		prepareDetailPage();
