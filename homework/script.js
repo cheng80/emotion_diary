@@ -14,6 +14,9 @@ let deletingDiaryNumber = 0;
 let dogImageList = [];
 let photoRatio = "square";
 let photoLoading = false;
+let searchTimer = 0;
+let photoScrollTimer = 0;
+let photoScrollReady = true;
 
 const moodImages = {
 	"행복해요": "../assets/diary-happy.png",
@@ -43,30 +46,28 @@ function saveDiaryList() {
 	localStorage.setItem(diaryStorageKey, JSON.stringify(diaryList));
 }
 
-// 저장된 다크모드 선택값을 화면과 체크박스에 적용
-function prepareTheme() {
-	const darkMode = localStorage.getItem(themeStorageKey) === "true";
-	const themeToggle = document.getElementById("theme-toggle");
-
+// 08/11 과제: 다크모드 선택값을 화면의 모든 토글에 적용
+function applyTheme(darkMode) {
 	if (darkMode) {
 		document.body.classList.add("dark-mode");
 	} else {
 		document.body.classList.remove("dark-mode");
 	}
 
-	themeToggle.checked = darkMode;
+	document.querySelectorAll(".theme-switch input").forEach(function (toggle) {
+		toggle.checked = darkMode;
+	});
+}
+
+// 저장된 다크모드 선택값을 화면과 체크박스에 적용
+function prepareTheme() {
+	applyTheme(localStorage.getItem(themeStorageKey) === "true");
 }
 
 // 체크박스 선택에 따라 다크모드를 전환하고 선택값을 저장
 function changeTheme(event) {
 	const darkMode = event.target.checked;
-
-	if (darkMode) {
-		document.body.classList.add("dark-mode");
-	} else {
-		document.body.classList.remove("dark-mode");
-	}
-
+	applyTheme(darkMode);
 	localStorage.setItem(themeStorageKey, String(darkMode));
 }
 
@@ -136,19 +137,40 @@ function getLibraryTabs(selectedLibrary) {
 	`;
 }
 
+// 08/11 과제: CSS 변수로 커스텀 드롭다운의 선택 문구를 표시
+function setDropdownValue(titleId, value) {
+	document.getElementById(titleId).style.setProperty("--dropdown-value", '"' + value + '"');
+}
+
+// 08/11 과제: 커스텀 드롭다운 값을 표시하고 목록을 닫음
+function closeDropdown(event, titleId) {
+	setDropdownValue(titleId, event.target.dataset.label);
+	document.getElementById(titleId).checked = false;
+}
+
+// 사진 비율 값에 맞는 표시 문구를 반환
+function getPhotoRatioLabel(ratio) {
+	if (ratio === "wide") return "가로형";
+	if (ratio === "portrait") return "세로형";
+	return "기본형";
+}
+
 // 08/10 과제: 일기보관함 컴포넌트를 화면에 표시
 function renderDiaryStorage() {
 	document.getElementById("library-content").innerHTML = `
 		${getLibraryTabs("diary")}
 		<div class="toolbar">
 			<div class="filters">
-				<select id="mood-filter" onchange="changeMood(event)">
-					<option>전체</option>
-					<option>슬퍼요</option>
-					<option>놀랐어요</option>
-					<option>화나요</option>
-					<option>행복해요</option>
-				</select>
+				<div class="custom-dropdown filter-dropdown">
+					<input class="dropdown-title" id="mood-dropdown-title" type="checkbox" aria-label="감정 필터 열기" />
+					<ul class="dropdown-list">
+						<li><input id="mood-all" type="radio" name="mood-filter" value="전체" data-label="전체" onclick="changeMood(event)" ${selectedMood === "전체" ? "checked" : ""} /><label for="mood-all">전체</label></li>
+						<li><input id="mood-sad" type="radio" name="mood-filter" value="슬퍼요" data-label="슬퍼요" onclick="changeMood(event)" ${selectedMood === "슬퍼요" ? "checked" : ""} /><label for="mood-sad">슬퍼요</label></li>
+						<li><input id="mood-surprised" type="radio" name="mood-filter" value="놀랐어요" data-label="놀랐어요" onclick="changeMood(event)" ${selectedMood === "놀랐어요" ? "checked" : ""} /><label for="mood-surprised">놀랐어요</label></li>
+						<li><input id="mood-angry" type="radio" name="mood-filter" value="화나요" data-label="화나요" onclick="changeMood(event)" ${selectedMood === "화나요" ? "checked" : ""} /><label for="mood-angry">화나요</label></li>
+						<li><input id="mood-happy" type="radio" name="mood-filter" value="행복해요" data-label="행복해요" onclick="changeMood(event)" ${selectedMood === "행복해요" ? "checked" : ""} /><label for="mood-happy">행복해요</label></li>
+					</ul>
+				</div>
 				<label class="search-label">
 					<input id="diary-search" class="search-input" type="text" placeholder="검색어를 입력해 주세요." oninput="changeSearch(event)" />
 				</label>
@@ -161,7 +183,7 @@ function renderDiaryStorage() {
 		<section class="diary-grid" id="diary-grid"></section>
 	`;
 
-	document.getElementById("mood-filter").value = selectedMood;
+	setDropdownValue("mood-dropdown-title", selectedMood);
 	document.getElementById("diary-search").value = searchKeyword;
 	filterDiaryList();
 }
@@ -171,23 +193,26 @@ function renderPhotoStorage() {
 	document.getElementById("library-content").innerHTML = `
 		${getLibraryTabs("photos")}
 		<div class="photo-toolbar">
-			<label class="photo-ratio-field">
+			<div class="photo-ratio-field">
 				<span>사진 비율</span>
-				<select id="photo-ratio-select" class="photo-ratio-select" onchange="changePhotoRatio(event)">
-					<option value="square">기본형</option>
-					<option value="wide">가로형</option>
-					<option value="portrait">세로형</option>
-				</select>
-			</label>
+				<div class="custom-dropdown photo-ratio-dropdown">
+					<input class="dropdown-title" id="photo-ratio-dropdown-title" type="checkbox" aria-label="사진 비율 열기" />
+					<ul class="dropdown-list">
+						<li><input id="photo-square" type="radio" name="photo-ratio" value="square" data-label="기본형" onclick="changePhotoRatio(event)" ${photoRatio === "square" ? "checked" : ""} /><label for="photo-square">기본형</label></li>
+						<li><input id="photo-wide" type="radio" name="photo-ratio" value="wide" data-label="가로형" onclick="changePhotoRatio(event)" ${photoRatio === "wide" ? "checked" : ""} /><label for="photo-wide">가로형</label></li>
+						<li><input id="photo-portrait" type="radio" name="photo-ratio" value="portrait" data-label="세로형" onclick="changePhotoRatio(event)" ${photoRatio === "portrait" ? "checked" : ""} /><label for="photo-portrait">세로형</label></li>
+					</ul>
+				</div>
+			</div>
 			<button class="primary-button" id="photo-reload" type="button" onclick="loadDogImages()" ${photoLoading ? "disabled" : ""}>새로 불러오기</button>
 		</div>
 		<section class="photo-gallery photo-gallery-${photoRatio}" id="photo-gallery"></section>
 	`;
 
-	document.getElementById("photo-ratio-select").value = photoRatio;
+	setDropdownValue("photo-ratio-dropdown-title", getPhotoRatioLabel(photoRatio));
 
 	if (dogImageList.length > 0) {
-		renderDogImages();
+		renderDogImages(dogImageList, false);
 		return;
 	}
 
@@ -243,16 +268,20 @@ function filterDiaryList() {
 	renderDiaryList(filteredDiaryList);
 }
 
-// 감정 선택값을 바꾸고 목록을 다시 표시
+// 감정 선택값을 바꾸고 드롭다운을 닫은 뒤 목록을 다시 표시
 function changeMood(event) {
 	selectedMood = event.target.value;
+	closeDropdown(event, "mood-dropdown-title");
 	filterDiaryList();
 }
 
-// 검색어를 바꾸고 목록을 다시 표시
+// 08/11 과제: 마지막 입력 700ms 후 검색 결과를 표시
 function changeSearch(event) {
 	searchKeyword = event.target.value;
-	filterDiaryList();
+	clearTimeout(searchTimer);
+	searchTimer = setTimeout(function () {
+		if (document.getElementById("diary-grid") !== null) filterDiaryList();
+	}, 700);
 }
 
 // 08/10 과제: 강아지 이미지를 기다리는 동안 그라데이션 스켈레톤을 표시
@@ -274,13 +303,13 @@ function renderPhotoSkeletons() {
 	gallery.innerHTML = skeletonHtml;
 }
 
-// 08/10 과제: API에서 받은 강아지 이미지를 사진보관함에 표시
-function renderDogImages() {
+// 08/10·08/11 과제: API에서 받은 강아지 이미지를 표시하거나 목록 끝에 추가
+function renderDogImages(imageList, append) {
 	const gallery = document.getElementById("photo-gallery");
 
 	if (gallery === null) return;
 
-	gallery.innerHTML = dogImageList.map(function (imageUrl, index) {
+	const photoHtml = imageList.map(function (imageUrl) {
 		return `
 			<figure class="photo-card">
 				<div class="photo-skeleton"><div class="photo-skeleton-bar"></div></div>
@@ -288,6 +317,12 @@ function renderDogImages() {
 			</figure>
 		`;
 	}).join("");
+
+	if (append === true) {
+		gallery.insertAdjacentHTML("beforeend", photoHtml);
+	} else {
+		gallery.innerHTML = photoHtml;
+	}
 }
 
 // 08/10 과제: 강아지 API 호출 실패 시 재시도 안내를 표시
@@ -304,14 +339,21 @@ function renderPhotoError() {
 	`;
 }
 
-// 08/10 과제: 비동기 처리와 예외 처리를 적용해 강아지 이미지 10개를 불러옴
-async function loadDogImages() {
+// 08/10·08/11 과제: 강아지 이미지 10개를 새로 표시하거나 목록 끝에 추가
+async function loadDogImages(append) {
 	if (photoLoading) return;
 
+	const appendImages = append === true;
 	photoLoading = true;
 	const reloadButton = document.getElementById("photo-reload");
 	if (reloadButton !== null) reloadButton.disabled = true;
-	renderPhotoSkeletons();
+
+	if (appendImages) {
+		const gallery = document.getElementById("photo-gallery");
+		if (gallery !== null) gallery.insertAdjacentHTML("beforeend", '<p class="photo-loading-more" id="photo-loading-more">사진 10장을 더 불러오는 중...</p>');
+	} else {
+		renderPhotoSkeletons();
+	}
 
 	try {
 		const response = await fetch(dogApiUrl);
@@ -322,16 +364,34 @@ async function loadDogImages() {
 
 		const result = await response.json();
 
-		if (result.status !== "success" || result.message === undefined) {
+		if (result.status !== "success" || Array.isArray(result.message) === false) {
 			throw new Error("강아지 이미지 응답 형식이 올바르지 않습니다.");
 		}
 
-		dogImageList = result.message;
-		renderDogImages();
+		if (appendImages) {
+			const loadingMore = document.getElementById("photo-loading-more");
+			if (loadingMore !== null) loadingMore.remove();
+			dogImageList = dogImageList.concat(result.message);
+			renderDogImages(result.message, true);
+
+			const scrollableHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+			photoScrollReady = scrollableHeight > 0 && document.documentElement.scrollTop / scrollableHeight < 0.7;
+		} else {
+			dogImageList = result.message;
+			renderDogImages(dogImageList, false);
+		}
 	} catch (error) {
-		dogImageList = [];
 		console.error(error);
-		renderPhotoError();
+
+		if (appendImages) {
+			const loadingMore = document.getElementById("photo-loading-more");
+			if (loadingMore !== null) loadingMore.remove();
+			photoScrollReady = true;
+			showToast("사진을 더 불러오지 못했습니다.");
+		} else {
+			dogImageList = [];
+			renderPhotoError();
+		}
 	} finally {
 		photoLoading = false;
 		const reloadButton = document.getElementById("photo-reload");
@@ -339,9 +399,10 @@ async function loadDogImages() {
 	}
 }
 
-// 08/10 과제: 선택한 비율 클래스를 사진 목록에 적용
+// 08/10·08/11 과제: 선택한 비율 클래스를 적용하고 드롭다운을 닫음
 function changePhotoRatio(event) {
 	photoRatio = event.target.value;
+	closeDropdown(event, "photo-ratio-dropdown-title");
 
 	const gallery = document.getElementById("photo-gallery");
 	gallery.className = "photo-gallery photo-gallery-" + photoRatio;
@@ -467,7 +528,8 @@ function addDiary() {
 	hideWriteModal();
 	selectedMood = "전체";
 	searchKeyword = "";
-	document.getElementById("mood-filter").value = selectedMood;
+	document.getElementById("mood-all").checked = true;
+	setDropdownValue("mood-dropdown-title", selectedMood);
 	document.getElementById("diary-search").value = searchKeyword;
 	filterDiaryList();
 	openModal("success-modal");
@@ -637,6 +699,32 @@ function addReflection() {
 function scrollToTop() {
 	window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+// 08/11 과제: 사진보관함에서 700ms마다 스크롤 위치를 확인해 사진 10개를 추가
+window.addEventListener("scroll", function () {
+	if (document.getElementById("photo-gallery") === null || photoScrollTimer !== 0) return;
+
+	photoScrollTimer = setTimeout(function () {
+		photoScrollTimer = 0;
+
+		if (document.getElementById("photo-gallery") === null) return;
+
+		const scrollableHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+		if (scrollableHeight <= 0) return;
+
+		const scrollRatio = document.documentElement.scrollTop / scrollableHeight;
+
+		if (scrollRatio < 0.7) {
+			photoScrollReady = true;
+			return;
+		}
+
+		if (photoScrollReady) {
+			photoScrollReady = false;
+			loadDogImages(true);
+		}
+	}, 700);
+});
 
 // 08/07 과제: ESC 키로 현재 열려 있는 모달을 닫기
 window.addEventListener("keydown", function (event) {

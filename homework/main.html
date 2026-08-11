@@ -50,7 +50,14 @@
 		<!-- 08/07 과제: 일기 작성 모달 -->
 		<div class="modal-background" id="write-modal" onclick="closeWriteModal()">
 			<div class="write-modal" onclick="event.stopPropagation()">
-				<h2 class="modal-title" id="write-modal-title">일기 쓰기</h2>
+				<div class="modal-heading">
+					<h2 class="modal-title" id="write-modal-title">일기 쓰기</h2>
+					<!-- 08/11 과제: 일기 등록 모달의 다크모드 토글 -->
+					<label class="theme-switch modal-theme-switch">
+						<span>다크모드</span>
+						<input type="checkbox" onchange="changeTheme(event)" />
+					</label>
+				</div>
 
 				<!-- 감정 선택 -->
 				<div class="field-group">
