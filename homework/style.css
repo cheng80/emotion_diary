@@ -753,8 +753,9 @@ select {
 	color: var(--color-on-primary);
 }
 
-/* 모달: 입력 전에는 저장 버튼 비활성화 */
-.submit-button:disabled {
+/* 공통: 사용할 수 없는 주요 버튼 표시 */
+.submit-button:disabled,
+.primary-button:disabled {
 	background-color: var(--color-disabled);
 	cursor: default;
 }

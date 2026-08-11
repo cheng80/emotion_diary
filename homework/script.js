@@ -179,7 +179,7 @@ function renderPhotoStorage() {
 					<option value="portrait">세로형</option>
 				</select>
 			</label>
-			<button class="primary-button" type="button" onclick="loadDogImages()">새로 불러오기</button>
+			<button class="primary-button" id="photo-reload" type="button" onclick="loadDogImages()" ${photoLoading ? "disabled" : ""}>새로 불러오기</button>
 		</div>
 		<section class="photo-gallery photo-gallery-${photoRatio}" id="photo-gallery"></section>
 	`;
@@ -309,6 +309,8 @@ async function loadDogImages() {
 	if (photoLoading) return;
 
 	photoLoading = true;
+	const reloadButton = document.getElementById("photo-reload");
+	if (reloadButton !== null) reloadButton.disabled = true;
 	renderPhotoSkeletons();
 
 	try {
@@ -332,6 +334,8 @@ async function loadDogImages() {
 		renderPhotoError();
 	} finally {
 		photoLoading = false;
+		const reloadButton = document.getElementById("photo-reload");
+		if (reloadButton !== null) reloadButton.disabled = false;
 	}
 }
 
