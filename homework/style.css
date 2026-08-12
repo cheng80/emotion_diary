@@ -156,9 +156,9 @@ p {
 	border: 0;
 	border-radius: 1.25rem;
 	appearance: none;
-	background-color: var(--color-soft);
+	/* 08/12 과제 추가 구현: 비활성 스위치에 밝은 선형 그라데이션 적용 */
+	background: linear-gradient(135deg, var(--color-soft), var(--color-disabled));
 	cursor: pointer;
-	transition: background-color 0.18s;
 }
 
 .theme-switch input::after {
@@ -167,16 +167,20 @@ p {
 	width: 2.25rem;
 	height: 2.25rem;
 	border-radius: 50%;
-	background-color: var(--color-surface);
+	/* 08/12 과제 추가 구현: 활성·비활성 원형 손잡이에 원형 그라데이션 적용 */
+	background: radial-gradient(circle at 30% 30%, var(--color-surface) 0 50%, var(--color-disabled) 90% 100%);
 	box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.18);
 	transition: transform 0.18s ease-out;
 }
 
 .theme-switch input:checked {
-	background-color: var(--color-toggle-active);
+	/* 08/12 과제 추가 구현: 활성 스위치에 진한 선형 그라데이션 적용 */
+	background: linear-gradient(135deg, var(--color-toggle-active), var(--color-muted));
 }
 
 .theme-switch input:checked::after {
+	/* 08/12 과제 추가 구현: 다크모드는 좌측 상단의 밝은 중심보다 어두운 영역을 넓게 적용 */
+	background: radial-gradient(circle at 30% 30%, var(--color-border) 0 30%, var(--color-surface) 60% 100%);
 	transform: translateX(2rem);
 }
 
@@ -553,6 +557,59 @@ p {
 	white-space: nowrap;
 }
 
+/* 08/12 과제: 일기 목록 페이지네이션 배치 */
+.pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	margin-top: 1.5rem;
+}
+
+.pagination-numbers {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+}
+
+.pagination-arrow,
+.pagination-number {
+	width: 2.5rem;
+	height: 2.5rem;
+	padding: 0;
+	border: 0;
+	border-radius: var(--control-radius);
+	background-color: transparent;
+	color: var(--color-muted);
+	font-variant-numeric: tabular-nums;
+}
+
+.pagination-arrow img {
+	width: 1.5rem;
+	height: 1.5rem;
+	filter: var(--surface-icon-filter);
+}
+
+.pagination-arrow:disabled {
+	visibility: hidden;
+	cursor: default;
+}
+
+/* 08/12 과제: 선택한 페이지에 선형 그라데이션 active 색상 적용 */
+.pagination-active {
+	background: linear-gradient(135deg, var(--color-soft), var(--color-border));
+	color: var(--color-text);
+	font-weight: 600;
+}
+
+.pagination-arrow:focus-visible,
+.pagination-number:focus-visible {
+	outline: 0.1875rem solid var(--color-focus);
+	outline-offset: 0.125rem;
+}
+
 /* 08/10 과제: 사진보관함 비율 선택과 API 이미지 목록 */
 .photo-toolbar {
 	display: flex;
@@ -632,7 +689,8 @@ p {
 .photo-skeleton-bar {
 	width: 30%;
 	height: 150%;
-	background-color: var(--color-skeleton-shine);
+	/* 08/12 과제 추가 구현: 투명한 가장자리와 밝은 중심의 선형 그라데이션 */
+	background: linear-gradient(90deg, transparent, var(--color-skeleton-shine), transparent);
 	filter: blur(2rem);
 	animation-name: photo-skeleton-animation;
 	animation-duration: 1.2s;

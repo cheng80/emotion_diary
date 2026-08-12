@@ -3,6 +3,9 @@ const toastStorageKey = "homework-toast-message";
 const themeStorageKey = "homework-dark-mode";
 const dogApiUrl = "https://dog.ceo/api/breeds/image/random/10";
 
+// 08/12 과제: 한 페이지에 표시할 일기 수
+const diaryPageSize = 12;
+
 const defaultDiaryList = [];
 
 let diaryList = [];
@@ -17,6 +20,9 @@ let photoLoading = false;
 let searchTimer = 0;
 let photoScrollTimer = 0;
 let photoScrollReady = true;
+
+// 08/12 과제: 현재 선택한 일기 목록 페이지
+let currentDiaryPage = 1;
 
 const moodImages = {
 	"행복해요": "../assets/diary-happy.png",
@@ -181,6 +187,16 @@ function renderDiaryStorage() {
 			</button>
 		</div>
 		<section class="diary-grid" id="diary-grid"></section>
+		<!-- 08/12 과제: 이전·다음 버튼과 페이지 번호를 표시 -->
+		<nav class="pagination" id="pagination" aria-label="일기 목록 페이지">
+			<button class="pagination-arrow" id="previous-page" type="button" aria-label="이전 페이지" onclick="changeDiaryPage(currentDiaryPage - 1)">
+				<img src="../assets/chevron-right.svg" alt="" />
+			</button>
+			<div class="pagination-numbers" id="page-numbers"></div>
+			<button class="pagination-arrow" id="next-page" type="button" aria-label="다음 페이지" onclick="changeDiaryPage(currentDiaryPage + 1)">
+				<img src="../assets/chevron-left.svg" alt="" />
+			</button>
+		</nav>
 	`;
 
 	setDropdownValue("mood-dropdown-title", selectedMood);
@@ -256,6 +272,24 @@ function renderDiaryList(list) {
 	document.getElementById("diary-grid").innerHTML = diaryHtml;
 }
 
+// 08/12 과제: 페이지 번호와 현재 페이지의 active 색상을 표시
+function renderPagination(totalPages) {
+	const pagination = document.getElementById("pagination");
+
+	if (pagination === null) return;
+
+	pagination.hidden = totalPages < 2;
+	document.getElementById("page-numbers").innerHTML = new Array(totalPages).fill("페이지").map(function (page, index) {
+		const pageNumber = index + 1;
+		const activeClass = pageNumber === currentDiaryPage ? " pagination-active" : "";
+		const currentPage = pageNumber === currentDiaryPage ? "page" : "false";
+
+		return `<button class="pagination-number${activeClass}" type="button" aria-label="${pageNumber}페이지" aria-current="${currentPage}" onclick="changeDiaryPage(${pageNumber})">${pageNumber}</button>`;
+	}).join("");
+	document.getElementById("previous-page").disabled = currentDiaryPage === 1;
+	document.getElementById("next-page").disabled = currentDiaryPage === totalPages;
+}
+
 // 선택한 감정과 검색어에 맞는 일기만 표시
 function filterDiaryList() {
 	const filteredDiaryList = diaryList.filter(function (diary) {
@@ -265,12 +299,28 @@ function filterDiaryList() {
 		return matchesMood && matchesKeyword;
 	});
 
-	renderDiaryList(filteredDiaryList);
+	const totalPages = Math.max(1, Math.ceil(filteredDiaryList.length / diaryPageSize));
+	currentDiaryPage = Math.max(1, Math.min(currentDiaryPage, totalPages));
+	const lastIndex = filteredDiaryList.length - 1 - (currentDiaryPage - 1) * diaryPageSize;
+	const firstIndex = lastIndex - diaryPageSize + 1;
+	const currentPageDiaryList = filteredDiaryList.filter(function (diary, index) {
+		return firstIndex <= index && index <= lastIndex;
+	});
+
+	renderDiaryList(currentPageDiaryList);
+	renderPagination(totalPages);
+}
+
+// 08/12 과제: 선택한 페이지로 이동해 일기 목록을 다시 표시
+function changeDiaryPage(page) {
+	currentDiaryPage = page;
+	filterDiaryList();
 }
 
 // 감정 선택값을 바꾸고 드롭다운을 닫은 뒤 목록을 다시 표시
 function changeMood(event) {
 	selectedMood = event.target.value;
+	currentDiaryPage = 1;
 	closeDropdown(event, "mood-dropdown-title");
 	filterDiaryList();
 }
@@ -278,6 +328,7 @@ function changeMood(event) {
 // 08/11 과제: 마지막 입력 700ms 후 검색 결과를 표시
 function changeSearch(event) {
 	searchKeyword = event.target.value;
+	currentDiaryPage = 1;
 	clearTimeout(searchTimer);
 	searchTimer = setTimeout(function () {
 		if (document.getElementById("diary-grid") !== null) filterDiaryList();
@@ -528,6 +579,7 @@ function addDiary() {
 	hideWriteModal();
 	selectedMood = "전체";
 	searchKeyword = "";
+	currentDiaryPage = 1;
 	document.getElementById("mood-all").checked = true;
 	setDropdownValue("mood-dropdown-title", selectedMood);
 	document.getElementById("diary-search").value = searchKeyword;
