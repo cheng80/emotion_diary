@@ -4,7 +4,7 @@ const themeStorageKey = "homework-dark-mode";
 const dogApiUrl = "https://dog.ceo/api/breeds/image/random/10";
 
 // 08/12 과제: 한 페이지에 표시할 일기 수
-const diaryPageSize = 12;
+const diaryPageSize = 8;
 
 const defaultDiaryList = [];
 
