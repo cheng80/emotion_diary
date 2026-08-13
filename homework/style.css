@@ -256,6 +256,8 @@ p {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	/* 08/13 과제 추가 구현: 화면 폭이 달라져도 일기장이 배너 중앙에 보이도록 초점 조정 */
+	object-position: center 65%;
 	outline: var(--border-width) solid var(--color-image-outline);
 	outline-offset: -0.0625rem;
 }
