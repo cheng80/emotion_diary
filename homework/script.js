@@ -20,15 +20,17 @@ let photoLoading = false;
 let searchTimer = 0;
 let photoScrollTimer = 0;
 let photoScrollReady = true;
+// 08/13 과제: 모달을 닫을 때 이전 초점으로 돌아가기 위한 기록
+let modalFocusHistory = [];
 
 // 08/12 과제: 현재 선택한 일기 목록 페이지
 let currentDiaryPage = 1;
 
 const moodImages = {
-	"행복해요": "../assets/diary-happy.png",
-	"슬퍼요": "../assets/diary-sad.png",
-	"놀랐어요": "../assets/diary-surprised.png",
-	"화나요": "../assets/diary-angry.png"
+	"행복해요": "../images/diary-happy.png",
+	"슬퍼요": "../images/diary-sad.png",
+	"놀랐어요": "../images/diary-surprised.png",
+	"화나요": "../images/diary-angry.png"
 };
 
 // 감정에 맞는 카드 배경 클래스를 반환
@@ -52,7 +54,7 @@ function saveDiaryList() {
 	localStorage.setItem(diaryStorageKey, JSON.stringify(diaryList));
 }
 
-// 08/11 과제: 다크모드 선택값을 화면의 모든 토글에 적용
+// 08/11·08/13 과제: 다크모드 선택값과 접근성 상태를 모든 스위치에 적용
 function applyTheme(darkMode) {
 	if (darkMode) {
 		document.body.classList.add("dark-mode");
@@ -62,6 +64,7 @@ function applyTheme(darkMode) {
 
 	document.querySelectorAll(".theme-switch input").forEach(function (toggle) {
 		toggle.checked = darkMode;
+		toggle.setAttribute("aria-checked", String(darkMode));
 	});
 }
 
@@ -92,17 +95,25 @@ function showSavedToast() {
 	localStorage.setItem(toastStorageKey, "");
 }
 
-// 08/07 과제: 모달을 열고 화면을 맨 위로 이동한 뒤 뒷배경 스크롤을 막는다.
+// 08/07·08/13 과제: 모달을 열고 첫 조작 요소로 초점을 이동한 뒤 뒷배경 스크롤을 막는다.
 function openModal(id) {
+	const modal = document.getElementById(id);
+	modalFocusHistory.push(document.activeElement);
 	window.scrollTo({ top: 0 });
 	document.body.style.overflow = "hidden";
-	document.getElementById(id).style.display = "flex";
+	modal.style.display = "flex";
+
+	const firstControl = modal.querySelector("button:not([disabled]), input:not([disabled]), textarea:not([disabled])");
+	if (firstControl !== null) firstControl.focus();
 }
 
-// 08/07 과제: 모달을 닫고 뒷배경 스크롤을 다시 허용
+// 08/07·08/13 과제: 모달을 닫고 뒷배경 스크롤과 이전 초점을 복원
 function closeModal(id) {
 	document.getElementById(id).style.display = "none";
 	document.body.style.overflow = "";
+
+	const previousFocus = modalFocusHistory.pop();
+	if (previousFocus !== undefined && typeof previousFocus.focus === "function") previousFocus.focus();
 }
 
 // 브라우저 저장소에서 일기 목록을 불러온다.
@@ -130,16 +141,18 @@ function loadDiaryList() {
 	}
 }
 
-// 08/10 과제: 선택한 보관함에 맞는 탭 컴포넌트를 반환
+// 08/10·08/13 과제: 현재 탭 상태를 보조 기술에 제공하는 보관함 메뉴를 반환
 function getLibraryTabs(selectedLibrary) {
 	const diaryClass = selectedLibrary === "diary" ? "tab tab-selected" : "tab";
 	const photoClass = selectedLibrary === "photos" ? "tab tab-selected" : "tab";
+	const diaryCurrent = selectedLibrary === "diary" ? "page" : "false";
+	const photoCurrent = selectedLibrary === "photos" ? "page" : "false";
 
 	return `
-		<div class="tabs">
-			<button class="${diaryClass}" type="button" onclick="changeLibraryView('diary')">일기보관함</button>
-			<button class="${photoClass}" type="button" onclick="changeLibraryView('photos')">사진보관함</button>
-		</div>
+		<nav class="tabs" aria-label="다이어리 메뉴">
+			<button class="${diaryClass}" type="button" aria-current="${diaryCurrent}" onclick="changeLibraryView('diary')">일기보관함</button>
+			<button class="${photoClass}" type="button" aria-current="${photoCurrent}" onclick="changeLibraryView('photos')">사진보관함</button>
+		</nav>
 	`;
 }
 
@@ -161,7 +174,7 @@ function getPhotoRatioLabel(ratio) {
 	return "기본형";
 }
 
-// 08/10 과제: 일기보관함 컴포넌트를 화면에 표시
+// 08/10·08/13 과제: 접근 가능한 이름과 상태를 포함한 일기보관함을 표시
 function renderDiaryStorage() {
 	document.getElementById("library-content").innerHTML = `
 		${getLibraryTabs("diary")}
@@ -178,23 +191,23 @@ function renderDiaryStorage() {
 					</ul>
 				</div>
 				<label class="search-label">
-					<input id="diary-search" class="search-input" type="text" placeholder="검색어를 입력해 주세요." oninput="changeSearch(event)" />
+					<input id="diary-search" class="search-input" type="text" aria-label="일기 검색" placeholder="검색어를 입력해 주세요." oninput="changeSearch(event)" />
 				</label>
 			</div>
 			<button class="write-button" type="button" onclick="openWriteModal()">
-				<img src="../assets/add.svg" />
+				<img src="../images/add.svg" alt="" aria-hidden="true" />
 				일기쓰기
 			</button>
 		</div>
-		<section class="diary-grid" id="diary-grid"></section>
+		<section class="diary-grid" id="diary-grid" aria-label="일기 목록" aria-live="polite"></section>
 		<!-- 08/12 과제: 이전·다음 버튼과 페이지 번호를 표시 -->
 		<nav class="pagination" id="pagination" aria-label="일기 목록 페이지">
 			<button class="pagination-arrow" id="previous-page" type="button" aria-label="이전 페이지" onclick="changeDiaryPage(currentDiaryPage - 1)">
-				<img src="../assets/chevron-right.svg" alt="" />
+				<img src="../images/chevron-right.svg" alt="" aria-hidden="true" />
 			</button>
 			<div class="pagination-numbers" id="page-numbers"></div>
 			<button class="pagination-arrow" id="next-page" type="button" aria-label="다음 페이지" onclick="changeDiaryPage(currentDiaryPage + 1)">
-				<img src="../assets/chevron-left.svg" alt="" />
+				<img src="../images/chevron-left.svg" alt="" aria-hidden="true" />
 			</button>
 		</nav>
 	`;
@@ -204,7 +217,7 @@ function renderDiaryStorage() {
 	filterDiaryList();
 }
 
-// 08/10 과제: 사진보관함 컴포넌트를 화면에 표시
+// 08/10·08/13 과제: 접근 가능한 이름과 로딩 상태를 포함한 사진보관함을 표시
 function renderPhotoStorage() {
 	document.getElementById("library-content").innerHTML = `
 		${getLibraryTabs("photos")}
@@ -222,7 +235,7 @@ function renderPhotoStorage() {
 			</div>
 			<button class="primary-button" id="photo-reload" type="button" onclick="loadDogImages()" ${photoLoading ? "disabled" : ""}>새로 불러오기</button>
 		</div>
-		<section class="photo-gallery photo-gallery-${photoRatio}" id="photo-gallery"></section>
+		<section class="photo-gallery photo-gallery-${photoRatio}" id="photo-gallery" aria-label="강아지 사진 목록" aria-live="polite" aria-busy="false"></section>
 	`;
 
 	setDropdownValue("photo-ratio-dropdown-title", getPhotoRatioLabel(photoRatio));
@@ -245,15 +258,16 @@ function changeLibraryView(library) {
 	}
 }
 
-// 일기 목록을 최신순으로 카드에 표시
+// 08/13 과제: 키보드로 상세 이동이 가능한 일기 카드를 최신순으로 표시
 function renderDiaryList(list) {
 	let diaryHtml = list.map(function (diary, index) {
 		diary = list[list.length - index - 1];
 
 		return `
-			<article class="diary-card" onclick="openDiary(${diary.number})">
-				<button class="card-delete" type="button" onclick="deleteDiaryFromList(event, ${diary.number})"><span class="delete-icon"><img src="../assets/close.svg" /></span></button>
-				<div class="card-visual ${getMoodBackground(diary.mood)}"><img src="${moodImages[diary.mood] || moodImages["화나요"]}" /></div>
+			<article class="diary-card">
+				<button class="card-delete" type="button" aria-label="일기 삭제" onclick="deleteDiaryFromList(event, ${diary.number})"><span class="delete-icon"><img src="../images/close.svg" alt="" aria-hidden="true" /></span></button>
+				<button class="card-open" type="button" aria-label="일기 상세 보기" onclick="openDiary(${diary.number})"></button>
+				<div class="card-visual ${getMoodBackground(diary.mood)}"><img src="${moodImages[diary.mood] || moodImages["화나요"]}" alt="${diary.mood} 감정 일기 이미지" /></div>
 				<div class="card-body">
 					<div class="card-info">
 						<strong class="${getMoodTextClass(diary.mood)}">${diary.mood}</strong>
@@ -335,17 +349,18 @@ function changeSearch(event) {
 	}, 700);
 }
 
-// 08/10 과제: 강아지 이미지를 기다리는 동안 그라데이션 스켈레톤을 표시
+// 08/10·08/13 과제: 보조 기술에 로딩 상태를 알리고 그라데이션 스켈레톤을 표시
 function renderPhotoSkeletons() {
 	const gallery = document.getElementById("photo-gallery");
 
 	if (gallery === null) return;
+	gallery.setAttribute("aria-busy", "true");
 
 	let skeletonHtml = "";
 
 	for (let index = 0; index < 10; index++) {
 		skeletonHtml += `
-			<div class="photo-card">
+			<div class="photo-card" aria-hidden="true">
 				<div class="photo-skeleton"><div class="photo-skeleton-bar"></div></div>
 			</div>
 		`;
@@ -354,17 +369,18 @@ function renderPhotoSkeletons() {
 	gallery.innerHTML = skeletonHtml;
 }
 
-// 08/10·08/11 과제: API에서 받은 강아지 이미지를 표시하거나 목록 끝에 추가
+// 08/10·08/11·08/13 과제: 로딩 상태와 대체 텍스트를 반영해 강아지 이미지를 표시
 function renderDogImages(imageList, append) {
 	const gallery = document.getElementById("photo-gallery");
 
 	if (gallery === null) return;
+	gallery.setAttribute("aria-busy", "false");
 
 	const photoHtml = imageList.map(function (imageUrl) {
 		return `
 			<figure class="photo-card">
-				<div class="photo-skeleton"><div class="photo-skeleton-bar"></div></div>
-				<img src="${imageUrl}" />
+				<div class="photo-skeleton" aria-hidden="true"><div class="photo-skeleton-bar"></div></div>
+				<img src="${imageUrl}" alt="강아지 사진" />
 			</figure>
 		`;
 	}).join("");
@@ -376,11 +392,12 @@ function renderDogImages(imageList, append) {
 	}
 }
 
-// 08/10 과제: 강아지 API 호출 실패 시 재시도 안내를 표시
+// 08/10·08/13 과제: 로딩 상태를 해제하고 API 재시도 안내를 표시
 function renderPhotoError() {
 	const gallery = document.getElementById("photo-gallery");
 
 	if (gallery === null) return;
+	gallery.setAttribute("aria-busy", "false");
 
 	gallery.innerHTML = `
 		<div class="photo-load-error">
@@ -390,7 +407,7 @@ function renderPhotoError() {
 	`;
 }
 
-// 08/10·08/11 과제: 강아지 이미지 10개를 새로 표시하거나 목록 끝에 추가
+// 08/10·08/11·08/13 과제: 추가 로딩 상태를 알리고 강아지 이미지 10개를 표시
 async function loadDogImages(append) {
 	if (photoLoading) return;
 
@@ -401,7 +418,7 @@ async function loadDogImages(append) {
 
 	if (appendImages) {
 		const gallery = document.getElementById("photo-gallery");
-		if (gallery !== null) gallery.insertAdjacentHTML("beforeend", '<p class="photo-loading-more" id="photo-loading-more">사진 10장을 더 불러오는 중...</p>');
+		if (gallery !== null) gallery.insertAdjacentHTML("beforeend", '<p class="photo-loading-more" id="photo-loading-more" role="status">사진 10장을 더 불러오는 중...</p>');
 	} else {
 		renderPhotoSkeletons();
 	}
@@ -681,10 +698,43 @@ function updateDiary() {
 	openModal("success-modal");
 }
 
-// 08/07 과제: 일기 내용을 클립보드에 복사하고 토스트를 표시
+// 08/13 과제: Clipboard API가 없는 브라우저에서 입력 요소로 복사 기능을 대체
+function copyTextFallback(text) {
+	const copyArea = document.createElement("textarea");
+	copyArea.value = text;
+	copyArea.setAttribute("readonly", "");
+	copyArea.style.position = "fixed";
+	copyArea.style.opacity = "0";
+	document.body.appendChild(copyArea);
+	copyArea.select();
+	let copied = false;
+
+	try {
+		copied = document.execCommand("copy");
+	} catch (error) {
+		copied = false;
+	}
+
+	copyArea.remove();
+	return copied;
+}
+
+// 08/07·08/13 과제: 일기 내용을 클립보드에 복사하고 브라우저별 결과를 안내
 function copyDiaryContent() {
-	navigator.clipboard.writeText(selectedDiary.content);
-	showToast("내용이 복사되었습니다.");
+	function showCopyResult(copied) {
+		showToast(copied ? "내용이 복사되었습니다." : "내용을 복사하지 못했습니다.");
+	}
+
+	if (navigator.clipboard !== undefined && navigator.clipboard.writeText !== undefined) {
+		navigator.clipboard.writeText(selectedDiary.content).then(function () {
+			showCopyResult(true);
+		}).catch(function () {
+			showCopyResult(copyTextFallback(selectedDiary.content));
+		});
+		return;
+	}
+
+	showCopyResult(copyTextFallback(selectedDiary.content));
 }
 
 // 08/07 과제: 삭제 확인 모달을 연다.

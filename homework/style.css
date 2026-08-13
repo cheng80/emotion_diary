@@ -1,4 +1,26 @@
 /* 기본 설정 */
+/* 08/13 과제: 한글이 포함된 IBM Plex Sans KR 웹폰트 적용 */
+@font-face {
+	font-family: "IBM Plex Sans KR";
+	src: url("../fonts/IBM_Plex_Sans_KR/IBMPlexSansKR-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "IBM Plex Sans KR";
+	src: url("../fonts/IBM_Plex_Sans_KR/IBMPlexSansKR-SemiBold.ttf") format("truetype");
+	font-weight: 600;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "IBM Plex Sans KR";
+	src: url("../fonts/IBM_Plex_Sans_KR/IBMPlexSansKR-Bold.ttf") format("truetype");
+	font-weight: 700;
+	font-display: swap;
+}
+
 /*
 	z-index 쌓임 트리
 	루트
@@ -100,6 +122,16 @@ body {
 	margin: 0;
 	color: var(--color-text);
 	background-color: var(--color-background);
+	/* 08/13 과제: 문서 전체에 IBM Plex Sans KR 웹폰트 적용 */
+	font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", sans-serif;
+}
+
+/* 08/13 과제: 폼 요소에서도 공통 웹폰트를 사용 */
+button,
+input,
+textarea,
+select {
+	font: inherit;
 }
 
 /* 공통: 버튼에 마우스 커서 표시 */
@@ -131,6 +163,25 @@ p {
 	background-color: var(--color-header);
 }
 
+/* 08/13 과제: 시맨틱 링크로 변경한 로고의 기존 모양 유지 */
+.logo {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* 08/13 과제: 화면에는 숨기고 보조 기술에는 제목을 제공 */
+.sr-only {
+	width: 0.0625rem;
+	height: 0.0625rem;
+	padding: 0;
+	margin: -0.0625rem;
+	position: absolute;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
 /* 헤더: 로고와 다크모드 선택을 양쪽에 배치 */
 .header-inner {
 	height: 100%;
@@ -147,7 +198,7 @@ p {
 	align-items: center;
 }
 
-/* 08/11 과제: appearance와 가상 요소로 꾸민 다크모드 토글 */
+/* 08/11·08/13 과제: 브라우저별 appearance와 가상 요소로 꾸민 다크모드 토글 */
 .theme-switch input {
 	width: 4.5rem;
 	height: 2.5rem;
@@ -155,6 +206,7 @@ p {
 	padding: 0.125rem;
 	border: 0;
 	border-radius: 1.25rem;
+	-webkit-appearance: none;
 	appearance: none;
 	/* 08/12 과제 추가 구현: 비활성 스위치에 밝은 선형 그라데이션 적용 */
 	background: linear-gradient(135deg, var(--color-soft), var(--color-disabled));
@@ -259,7 +311,7 @@ p {
 	align-items: center;
 }
 
-/* 08/11 과제: 체크박스와 인접 형제 선택자로 여닫는 커스텀 드롭다운 */
+/* 08/11·08/13 과제: 브라우저별 appearance와 인접 형제 선택자로 여닫는 커스텀 드롭다운 */
 .custom-dropdown {
 	width: 7.5rem;
 	position: relative;
@@ -273,6 +325,7 @@ p {
 	padding: 0 0.75rem;
 	border: var(--border-width) solid var(--color-border);
 	border-radius: var(--control-radius);
+	-webkit-appearance: none;
 	appearance: none;
 	background-color: var(--color-surface);
 	color: var(--color-text);
@@ -366,7 +419,7 @@ p {
 	padding: 0 1rem 0 3rem;
 	border: var(--border-width) solid var(--color-border);
 	border-radius: 1.5rem;
-	background: var(--color-surface) url("../assets/search.svg") 1rem center / 1.5rem no-repeat;
+	background: var(--color-surface) url("../images/search.svg") 1rem center / 1.5rem no-repeat;
 	color: var(--color-text);
 }
 
@@ -435,6 +488,24 @@ p {
 	background-color: var(--color-surface);
 	cursor: pointer;
 	transition: transform 0.2s;
+}
+
+/* 08/13 과제: 카드 상세 이동을 키보드로 조작할 수 있는 버튼으로 구성 */
+.card-open {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	border: 0;
+	background-color: transparent;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+
+.card-open:focus-visible {
+	outline: 0.1875rem solid var(--color-focus);
+	outline-offset: -0.25rem;
 }
 
 .diary-card:hover {
@@ -1103,7 +1174,7 @@ p {
 	flex-wrap: wrap;
 	gap: 0.75rem;
 	padding: 0.5rem 0;
-	background: url("../assets/detail-line.svg") center bottom / 100% 0.0625rem no-repeat;
+	background: url("../images/detail-line.svg") center bottom / 100% 0.0625rem no-repeat;
 }
 
 .reflection-item-last {

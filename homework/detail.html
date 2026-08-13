@@ -4,26 +4,28 @@
 		<!-- 문서 설정 -->
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- 08/13 과제: 검색 결과에 사용할 페이지 설명 제공 -->
+		<meta name="description" content="선택한 감정 일기의 내용과 회고를 확인하고 수정하는 상세 페이지입니다." />
 		<title>택권의 다이어리 상세보기</title>
 		<link rel="stylesheet" href="./style.css" />
 	</head>
 	<body>
-		<!-- 헤더 -->
-		<div class="site-header">
+		<!-- 08/13 과제: 시맨틱 헤더와 접근 가능한 홈 링크·다크모드 스위치 -->
+		<header class="site-header">
 			<div class="page header-inner">
 				<!-- 다이어리 이름 -->
-				<div class="logo">택권의 다이어리</div>
+				<a class="logo" href="./main.html" aria-label="택권의 다이어리 홈">택권의 다이어리</a>
 
 				<!-- 다크모드 선택 -->
 				<label class="theme-switch">
 					<span>다크모드</span>
-					<input id="theme-toggle" type="checkbox" onchange="changeTheme(event)" />
+					<input id="theme-toggle" type="checkbox" role="switch" aria-label="다크모드 전환" onchange="changeTheme(event)" />
 				</label>
 			</div>
-		</div>
+		</header>
 
-		<!-- 일기 상세 -->
-		<div class="page">
+		<!-- 08/13 과제: 일기 상세 내용을 시맨틱 메인으로 구성 -->
+		<main class="page">
 			<section class="detail-view">
 				<!-- 일기 목록으로 이동 -->
 				<button class="outline-button detail-back-button" type="button" onclick="location.href='./main.html'">← 목록으로</button>
@@ -36,7 +38,8 @@
 
 						<div class="detail-info">
 							<div class="mood-info">
-								<img class="mood-image" id="detail-emoji" src="../assets/mood-happy.png" />
+								<!-- 08/13 과제: 감정 이미지의 내용을 설명하는 대체 텍스트 제공 -->
+								<img class="mood-image" id="detail-emoji" src="../images/mood-happy.png" alt="행복해요 감정" />
 								<strong class="happy-text" id="detail-mood">행복해요</strong>
 							</div>
 							<span class="date" id="detail-date">2024. 03. 12 작성</span>
@@ -47,10 +50,10 @@
 					<div class="detail-content">
 						<h2>내용</h2>
 						<p class="diary-content" id="detail-body">함께 이야기하고 웃어서 행복한 하루였다.</p>
-						<!-- 08/07 과제: 내용 복사와 토스트 안내 -->
+						<!-- 08/07·08/13 과제: 장식 이미지를 보조 기술에서 제외한 내용 복사 버튼 -->
 						<div class="copy-area">
 							<button class="copy-button" type="button" onclick="copyDiaryContent()">
-								<img src="../assets/content-copy.svg" />
+								<img src="../images/content-copy.svg" alt="" aria-hidden="true" />
 								내용 복사
 							</button>
 						</div>
@@ -62,9 +65,9 @@
 						<button class="outline-button" type="button" onclick="deleteDiary()">삭제</button>
 					</div>
 
-					<!-- 08/05 과제: 회고 입력과 목록 -->
-					<section class="reflection">
-						<h2>회고</h2>
+					<!-- 08/05·08/13 과제: 제목과 연결한 회고 입력과 목록 영역 -->
+					<section class="reflection" aria-labelledby="reflection-title">
+						<h2 id="reflection-title">회고</h2>
 
 						<!-- 회고 입력 -->
 						<form class="reflection-form">
@@ -78,31 +81,31 @@
 					</section>
 				</article>
 			</section>
-		</div>
+		</main>
 
-		<!-- 푸터 -->
-		<div class="site-footer">
+		<!-- 08/13 과제: 사이트 정보를 시맨틱 푸터로 구성 -->
+		<footer class="site-footer">
 			<div class="page footer-inner">
 				<strong>택권의 다이어리</strong>
 				<p>대표 : 김택권</p>
 				<p class="copyright">Copyright © 2024. 김택권 Co., Ltd.</p>
 			</div>
-		</div>
+		</footer>
 
-		<!-- 08/05 과제·08/06 과제: 맨 위로 이동하는 고정 버튼 -->
-		<button class="scroll-top" type="button" onclick="scrollToTop()">
-			<img src="../assets/scroll-top.svg" />
+		<!-- 08/05·08/06·08/13 과제: 접근 가능한 이름을 가진 맨 위 이동 고정 버튼 -->
+		<button class="scroll-top" type="button" aria-label="맨 위로 이동" onclick="scrollToTop()">
+			<img src="../images/scroll-top.svg" alt="" aria-hidden="true" />
 		</button>
 
-		<!-- 08/07 과제: 일기 수정 모달 -->
+		<!-- 08/07·08/13 과제: 제목과 연결된 일기 수정 대화상자 -->
 		<div class="modal-background" id="write-modal" onclick="closeWriteModal()">
-			<div class="write-modal" onclick="event.stopPropagation()">
+			<div class="write-modal" role="dialog" aria-modal="true" aria-labelledby="write-modal-title" onclick="event.stopPropagation()">
 				<div class="modal-heading">
 					<h2 class="modal-title" id="write-modal-title">일기 수정</h2>
-					<!-- 08/11 과제: 일기 수정 모달의 다크모드 토글 -->
+					<!-- 08/11·08/13 과제: 역할과 이름을 제공한 다크모드 스위치 -->
 					<label class="theme-switch modal-theme-switch">
 						<span>다크모드</span>
-						<input type="checkbox" onchange="changeTheme(event)" />
+						<input type="checkbox" role="switch" aria-label="다크모드 전환" onchange="changeTheme(event)" />
 					</label>
 				</div>
 
@@ -137,9 +140,9 @@
 			</div>
 		</div>
 
-		<!-- 08/07 과제: 일기 수정 취소 확인 모달 -->
+		<!-- 08/07·08/13 과제: 제목과 연결된 일기 수정 취소 대화상자 -->
 		<div class="modal-background" id="cancel-modal" onclick="keepWriting()">
-			<div class="message-modal" onclick="event.stopPropagation()">
+			<div class="message-modal" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title" onclick="event.stopPropagation()">
 				<h2 id="cancel-modal-title">일기 수정을 취소할까요?</h2>
 				<div class="modal-buttons">
 					<button class="close-button" type="button" onclick="keepWriting()">계속 작성</button>
@@ -148,20 +151,20 @@
 			</div>
 		</div>
 
-		<!-- 08/07 과제: 일기 수정 완료 안내 모달 -->
+		<!-- 08/07·08/13 과제: 제목과 연결된 일기 수정 완료 대화상자 -->
 		<div class="modal-background" id="success-modal" onclick="closeSuccessModal()">
-			<div class="message-modal" onclick="event.stopPropagation()">
-				<h2>수정이 완료되었습니다.</h2>
+			<div class="message-modal" role="dialog" aria-modal="true" aria-labelledby="success-modal-title" onclick="event.stopPropagation()">
+				<h2 id="success-modal-title">수정이 완료되었습니다.</h2>
 				<div class="modal-buttons">
 					<button class="submit-button" type="button" onclick="closeSuccessModal()">확인</button>
 				</div>
 			</div>
 		</div>
 
-		<!-- 08/05 과제·08/07 과제: 목록·상세 공용 삭제 확인 모달 -->
+		<!-- 08/05·08/07·08/13 과제: 제목과 연결된 목록·상세 공용 삭제 대화상자 -->
 		<div class="modal-background" id="delete-modal" onclick="closeDeleteModal()">
-			<div class="message-modal" onclick="event.stopPropagation()">
-				<h2>이 일기를 삭제할까요?</h2>
+			<div class="message-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" onclick="event.stopPropagation()">
+				<h2 id="delete-modal-title">이 일기를 삭제할까요?</h2>
 				<div class="modal-buttons">
 					<button class="close-button" type="button" onclick="closeDeleteModal()">취소</button>
 					<button class="submit-button" type="button" onclick="confirmDeleteDiary()">삭제</button>
@@ -169,10 +172,12 @@
 			</div>
 		</div>
 
-		<!-- 토스트 메시지 -->
-		<div class="toast-area" id="toast-area"></div>
+		<!-- 08/13 과제: 보조 기술에 변경 내용을 알리는 토스트 영역 -->
+		<div class="toast-area" id="toast-area" role="status" aria-live="polite" aria-atomic="true"></div>
 
 		<!-- 자바스크립트 연결 -->
+		<!-- 08/13 과제: Cloudflare cdnjs에서 필요한 기능만 폴리필 -->
+		<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0&amp;features=String.prototype.includes"></script>
 		<script src="./script.js"></script>
 	</body>
 </html>
